@@ -36,11 +36,11 @@ public class MainFlexGroup extends FlexItemGroup {
     */
 
     private static final int GUIDE_BACK = 1;
-    private static final int DOCS = 9;
-    private static final int MATERIALS = 10;
-    private static final int TOOLS = 11;
-    private static final int NETWORK_ITEMS = 12;
-    private static final int NETWORK_QUANTUMS = 13;
+    // private static final int DOCS = 9;
+    private static final int MATERIALS = 9;
+    private static final int TOOLS = 10;
+    private static final int NETWORK_ITEMS = 11;
+    private static final int NETWORK_QUANTUMS = 12;
 
     private static final int[] HEADER = new int[]{
         0, 1, 2, 3, 4, 5, 6, 7, 8
@@ -62,7 +62,7 @@ public class MainFlexGroup extends FlexItemGroup {
     @Override
     @ParametersAreNonnullByDefault
     public void open(Player p, PlayerProfile profile, SlimefunGuideMode mode) {
-        final ChestMenu chestMenu = new ChestMenu(Theme.MAIN.getColor() + "Networks");
+        final ChestMenu chestMenu = new ChestMenu(Theme.MAIN.getColor() + "网络科技");
 
         for (int slot : HEADER) {
             chestMenu.addItem(slot, ChestMenuUtils.getBackground(), (player1, i1, itemStack, clickAction) -> false);

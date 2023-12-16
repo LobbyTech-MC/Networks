@@ -81,7 +81,9 @@ public class NetworkVacuum extends NetworkObject {
         );
     }
 
-    private void findItem(@Nonnull BlockMenu blockMenu) {
+
+
+	private void findItem(@Nonnull BlockMenu blockMenu) {
         for (int inputSlot : INPUT_SLOTS) {
             final ItemStack inSlot = blockMenu.getItemInSlot(inputSlot);
             if (inSlot == null || inSlot.getType().isAir()) {

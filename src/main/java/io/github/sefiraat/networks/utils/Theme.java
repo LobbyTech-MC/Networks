@@ -139,5 +139,13 @@ public enum Theme {
         );
     }
 
+	String getLoreLine() {
+		return loreLine;
+	}
+
+	public ChatColor getColor() {
+		return color;
+	}
+
 
 }

@@ -26,12 +26,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 public class MainFlexGroup extends FlexItemGroup {
 
+	/*
     private static final ItemStack DOCS_ITEM_STACK = Theme.themedItemStack(
         Material.BOOK,
         Theme.GUIDE,
         "附属 Wiki",
         "点击获取网络的 Wiki 链接"
     );
+    */
 
     private static final int GUIDE_BACK = 1;
     private static final int DOCS = 9;
@@ -99,15 +101,17 @@ public class MainFlexGroup extends FlexItemGroup {
             return false;
         });
 
+        /*
         // Docs
         menu.replaceExistingItem(DOCS, DOCS_ITEM_STACK);
         menu.addMenuClickHandler(DOCS, (player1, i1, itemStack1, clickAction) -> {
             final TextComponent link = new TextComponent("单击此处访问Wiki");
             link.setColor(ChatColor.YELLOW);
-            link.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://slimefun-addons-wiki.guizhanss.cn/networks/"));
+            link.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Sefiraat/Networks/wiki/"));
             player.spigot().sendMessage(link);
             return false;
         });
+        */
 
         // Materials
         menu.replaceExistingItem(MATERIALS, NetworksItemGroups.MATERIALS.getItem(player));

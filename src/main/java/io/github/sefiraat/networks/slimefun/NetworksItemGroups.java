@@ -22,7 +22,7 @@ public final class NetworksItemGroups {
         Keys.newKey("main"),
         new CustomItemStack(
             new ItemStack(Material.BLACK_STAINED_GLASS),
-            Theme.MAIN.getColor() + "网络 (Networks)"
+            Theme.MAIN.getColor() + "网络科技"
         )
     );
 

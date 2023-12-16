@@ -84,7 +84,7 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
 
         AdvancedPie networksChart = new AdvancedPie("networks", () -> {
             Map<String, Integer> networksMap = new HashMap<>();
-            networksMap.put("Number of networks", NetworkController.getNetworks().size());
+            networksMap.put("网络数量", NetworkController.getNetworks().size());
             return networksMap;
         });
 

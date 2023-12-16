@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.sefiraat</groupId>
     <artifactId>networks</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.0 (汉化版)</version>
 
     <distributionManagement>
         <repository>
@@ -50,19 +50,6 @@
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sonar.projectKey>Networks</sonar.projectKey>
-        <sonar.organization>sefiraat</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-
-        <sonar.issue.ignore.multicriteria>e1,e2,e3</sonar.issue.ignore.multicriteria>
-        <sonar.issue.ignore.multicriteria.e1.ruleKey>java:S6212</sonar.issue.ignore.multicriteria.e1.ruleKey>
-        <sonar.issue.ignore.multicriteria.e1.resourceKey>**</sonar.issue.ignore.multicriteria.e1.resourceKey>
-
-        <sonar.issue.ignore.multicriteria.e2.ruleKey>java:S125</sonar.issue.ignore.multicriteria.e2.ruleKey>
-        <sonar.issue.ignore.multicriteria.e2.resourceKey>**</sonar.issue.ignore.multicriteria.e2.resourceKey>
-
-        <sonar.issue.ignore.multicriteria.e3.ruleKey>java:S2245</sonar.issue.ignore.multicriteria.e3.ruleKey>
-        <sonar.issue.ignore.multicriteria.e3.resourceKey>**</sonar.issue.ignore.multicriteria.e3.resourceKey>
     </properties>
 
     <build>
@@ -73,6 +60,7 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
+                    <minimizeJar>true</minimizeJar>
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
@@ -146,9 +134,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.Slimefun</groupId>
+            <groupId>com.github.StarWishsama</groupId>
             <artifactId>Slimefun4</artifactId>
-            <version>RC-35</version>
+            <version>54c1294732</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -169,6 +157,16 @@
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>annotations</artifactId>
             <version>3.0.1u2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.jcip</groupId>
+                    <artifactId>jcip-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>jsr305</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -206,6 +204,14 @@
             <groupId>com.gmail.nossr50.mcMMO</groupId>
             <artifactId>mcMMO</artifactId>
             <version>2.1.221</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 汉化库 -->
+        <dependency>
+            <groupId>net.guizhanss</groupId>
+            <artifactId>GuizhanLibPlugin</artifactId>
+            <version>1.5.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

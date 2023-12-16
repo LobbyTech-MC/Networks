@@ -10,6 +10,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.UnplaceableBlock;
+import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,33 +28,24 @@ public class CraftingBlueprint extends UnplaceableBlock {
     @ParametersAreNonnullByDefault
     public static void setBlueprint(ItemStack blueprint, ItemStack[] recipe, ItemStack output) {
         final ItemMeta itemMeta = blueprint.getItemMeta();
-        final ItemMeta outputMeta = output.getItemMeta();
         DataTypeMethods.setCustom(itemMeta, Keys.BLUEPRINT_INSTANCE, PersistentCraftingBlueprintType.TYPE, new BlueprintInstance(recipe, output));
         List<String> lore = new ArrayList<>();
 
-        lore.add(Theme.CLICK_INFO + "Assigned Recipe");
+        lore.add(Theme.CLICK_INFO + "已指定配方");
 
         for (ItemStack item : recipe) {
             if (item == null) {
-                lore.add(Theme.PASSIVE + "Nothing");
+                lore.add(Theme.PASSIVE + "空");
                 continue;
             }
-            ItemMeta recipeItemMeta = item.getItemMeta();
-            if (recipeItemMeta.hasDisplayName()) {
-                lore.add(Theme.PASSIVE + ChatColor.stripColor(recipeItemMeta.getDisplayName()));
-            } else {
-                lore.add(Theme.PASSIVE + StringUtils.toTitleCase(item.getType().name()));
-            }
+            lore.add(Theme.PASSIVE + ChatColor.stripColor(ItemStackHelper.getDisplayName(item)));
         }
 
         lore.add("");
-        lore.add(Theme.CLICK_INFO + "Outputting");
+        lore.add(Theme.CLICK_INFO + "输出物品");
 
-        if (outputMeta.hasDisplayName()) {
-            lore.add(Theme.PASSIVE + ChatColor.stripColor(outputMeta.getDisplayName()));
-        } else {
-            lore.add(Theme.PASSIVE + StringUtils.toTitleCase(output.getType().name()));
-        }
+        lore.add(Theme.PASSIVE + ChatColor.stripColor(ItemStackHelper.getDisplayName(output)));
+
         itemMeta.setLore(lore);
 
         blueprint.setItemMeta(itemMeta);

@@ -1,5 +1,6 @@
 package io.github.sefiraat.networks.slimefun.network.grid;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.network.GridItemRequest;
 import io.github.sefiraat.networks.network.NetworkRoot;
@@ -16,12 +17,11 @@ import io.github.thebusybiscuit.slimefun4.api.items.settings.IntRangeSetting;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
+import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,6 +33,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.text.Collator;
 import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -49,22 +50,22 @@ public abstract class AbstractGrid extends NetworkObject {
 
     private static final CustomItemStack PAGE_PREVIOUS_STACK = new CustomItemStack(
         Material.RED_STAINED_GLASS_PANE,
-        Theme.CLICK_INFO.getColor() + "Previous Page"
+        Theme.CLICK_INFO.getColor() + "上一页"
     );
 
     private static final CustomItemStack PAGE_NEXT_STACK = new CustomItemStack(
         Material.RED_STAINED_GLASS_PANE,
-        Theme.CLICK_INFO.getColor() + "Next Page"
+        Theme.CLICK_INFO.getColor() + "下一页"
     );
 
     private static final CustomItemStack CHANGE_SORT_STACK = new CustomItemStack(
         Material.BLUE_STAINED_GLASS_PANE,
-        Theme.CLICK_INFO.getColor() + "Change Sort Order"
+        Theme.CLICK_INFO.getColor() + "更改排序方式"
     );
 
     private static final CustomItemStack FILTER_STACK = new CustomItemStack(
         Material.NAME_TAG,
-        Theme.CLICK_INFO.getColor() + "Set Filter (Right Click to Clear)"
+        Theme.CLICK_INFO.getColor() + "设置过滤器 (右键点击以清除)"
     );
 
     private static final Comparator<Map.Entry<ItemStack, Integer>> ALPHABETICAL_SORT = Comparator.comparing(
@@ -74,12 +75,10 @@ public abstract class AbstractGrid extends NetworkObject {
             if (slimefunItem != null) {
                 return ChatColor.stripColor(slimefunItem.getItemName());
             } else {
-                ItemMeta itemMeta = itemStackIntegerEntry.getKey().getItemMeta();
-                return itemMeta.hasDisplayName()
-                    ? ChatColor.stripColor(itemMeta.getDisplayName())
-                    : itemStackIntegerEntry.getKey().getType().name();
+                return ChatColor.stripColor(ItemStackHelper.getDisplayName(itemStack));
             }
-        }
+        },
+        Collator.getInstance(Locale.CHINA)::compare
     );
 
     private static final Comparator<Map.Entry<ItemStack, Integer>> NUMERICAL_SORT = Map.Entry.comparingByValue();
@@ -105,9 +104,9 @@ public abstract class AbstractGrid extends NetworkObject {
                 }
 
                 @Override
-                public void tick(Block block, SlimefunItem item, Config data) {
+                public void tick(Block block, SlimefunItem item, SlimefunBlockData data) {
                     if (tick <= 1) {
-                        final BlockMenu blockMenu = BlockStorage.getInventory(block);
+                        final BlockMenu blockMenu = data.getBlockMenu();
                         addToRegistry(block);
                         tryAddItem(blockMenu);
                         updateDisplay(blockMenu);
@@ -219,13 +218,7 @@ public abstract class AbstractGrid extends NetworkObject {
                 }
 
                 final ItemStack itemStack = entry.getKey();
-                String name = itemStack.getType().name().toLowerCase(Locale.ROOT);
-                if (itemStack.hasItemMeta()) {
-                    final ItemMeta itemMeta = itemStack.getItemMeta();
-                    if (itemMeta.hasDisplayName()) {
-                        name = ChatColor.stripColor(itemMeta.getDisplayName().toLowerCase(Locale.ROOT));
-                    }
-                }
+                String name = ChatColor.stripColor(ItemStackHelper.getDisplayName(itemStack).toLowerCase(Locale.ROOT));
                 return name.contains(cache.getFilter());
             })
             .sorted(cache.getSortOrder() == GridCache.SortOrder.ALPHABETICAL ? ALPHABETICAL_SORT : NUMERICAL_SORT.reversed())
@@ -237,13 +230,13 @@ public abstract class AbstractGrid extends NetworkObject {
             gridCache.setFilter(null);
         } else {
             player.closeInventory();
-            player.sendMessage(Theme.WARNING + "Type what you would like to filter this grid to");
+            player.sendMessage(Theme.WARNING + "请输入你想要过滤的物品名称(显示名)或类型");
             ChatUtils.awaitInput(player, s -> {
                 if (s.isBlank()) {
                     return;
                 }
                 gridCache.setFilter(s.toLowerCase(Locale.ROOT));
-                player.sendMessage(Theme.SUCCESS + "Filter applied");
+                player.sendMessage(Theme.SUCCESS + "已启用过滤器");
             });
         }
         return false;
@@ -373,7 +366,7 @@ public abstract class AbstractGrid extends NetworkObject {
 
     @Nonnull
     private static List<String> getLoreAddition(int amount) {
-        final MessageFormat format = new MessageFormat("{0}Amount: {1}{2}", Locale.ROOT);
+        final MessageFormat format = new MessageFormat("{0}数量: {1}{2}", Locale.ROOT);
         return List.of(
             "",
             format.format(new Object[]{Theme.CLICK_INFO.getColor(), Theme.PASSIVE.getColor(), amount}, new StringBuffer(), null).toString()

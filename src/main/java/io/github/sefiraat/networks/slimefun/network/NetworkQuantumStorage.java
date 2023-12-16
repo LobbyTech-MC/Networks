@@ -1,9 +1,10 @@
 package io.github.sefiraat.networks.slimefun.network;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.sefiraat.networks.network.stackcaches.QuantumCache;
 import io.github.sefiraat.networks.utils.Keys;
 import io.github.sefiraat.networks.utils.StackUtils;
-import io.github.sefiraat.networks.utils.StringUtils;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.sefiraat.networks.utils.datatypes.DataTypeMethods;
 import io.github.sefiraat.networks.utils.datatypes.PersistentQuantumStorageType;
@@ -19,12 +20,11 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.data.persistent.Persis
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import net.guizhanss.guizhanlib.java.BooleanHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -56,6 +56,8 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
         Integer.MAX_VALUE
     };
 
+    private static final String WIKI_PAGE = "Quantum-Storage";
+
     public static final String BS_AMOUNT = "stored_amount";
     public static final String BS_VOID = "void_excess";
 
@@ -66,31 +68,30 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
 
     private static final ItemStack BACK_INPUT = new CustomItemStack(
         Material.GREEN_STAINED_GLASS_PANE,
-        Theme.PASSIVE + "Input"
+        Theme.PASSIVE + "输入"
     );
 
     private static final ItemStack BACK_ITEM = new CustomItemStack(
         Material.BLUE_STAINED_GLASS_PANE,
-        Theme.PASSIVE + "Item Stored"
+        Theme.PASSIVE + "当前存储的物品"
     );
 
     private static final ItemStack NO_ITEM = new CustomItemStack(
         Material.RED_STAINED_GLASS_PANE,
-        Theme.ERROR + "No Registered Item",
-        Theme.PASSIVE + "Click the icon below while",
-        Theme.PASSIVE + "holding an item to register it."
+        Theme.ERROR + "未指定物品",
+        Theme.PASSIVE + "拿起物品并点击下方的按钮",
+        Theme.PASSIVE + "以设置量子存储保存的物品"
     );
 
     private static final ItemStack SET_ITEM = new CustomItemStack(
         Material.LIME_STAINED_GLASS_PANE,
-        Theme.SUCCESS + "Set Item",
-        Theme.PASSIVE + "Drag an item on top of this pane to register it.",
-        Theme.PASSIVE + "Shift Click to change voiding"
-    );
+        Theme.SUCCESS + "设置",
+        Theme.PASSIVE + "拿起物品并点击这里以设置物品",
+        Theme.CLICK_INFO + "Shift+左键点击" + Theme.PASSIVE + "切换满载清空输入");
 
     private static final ItemStack BACK_OUTPUT = new CustomItemStack(
         Material.ORANGE_STAINED_GLASS_PANE,
-        Theme.PASSIVE + "Output"
+        Theme.PASSIVE + "输出"
     );
 
     private static final int[] INPUT_SLOTS = new int[]{0, 2};
@@ -126,7 +127,7 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
                 }
 
                 @Override
-                public void tick(Block b, SlimefunItem item, Config data) {
+                public void tick(Block b, SlimefunItem item, SlimefunBlockData data) {
                     onTick(b);
                 }
             },
@@ -147,7 +148,7 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
     }
 
     private void onTick(Block block) {
-        final BlockMenu blockMenu = BlockStorage.getInventory(block);
+        final BlockMenu blockMenu = StorageCacheUtils.getMenu(block.getLocation());
 
         if (blockMenu == null) {
             CACHES.remove(block.getLocation());
@@ -207,7 +208,7 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
 
         final QuantumCache cache = CACHES.get(blockMenu.getLocation());
         if (cache == null || cache.getAmount() > 0) {
-            player.sendMessage(Theme.WARNING + "Quantum Storage must be empty before changing the set item.");
+            player.sendMessage(Theme.WARNING + "量子存储必须为空才能更换物品");
             return;
         }
         itemStack.setAmount(1);
@@ -219,6 +220,7 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
 
     @Override
     public void postRegister() {
+        addWikiPage(WIKI_PAGE);
         new BlockMenuPreset(this.getId(), this.getItemName()) {
 
             @Override
@@ -275,8 +277,9 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
 
     private QuantumCache addCache(@Nonnull BlockMenu blockMenu) {
         final Location location = blockMenu.getLocation();
-        final String amountString = BlockStorage.getLocationInfo(location, BS_AMOUNT);
-        final String voidString = BlockStorage.getLocationInfo(location, BS_VOID);
+        var blockData = StorageCacheUtils.getBlock(location);
+        final String amountString = blockData.getData(BS_AMOUNT);
+        final String voidString = blockData.getData(BS_VOID);
         final int amount = amountString == null ? 0 : Integer.parseInt(amountString);
         final boolean voidExcess = voidString == null || Boolean.parseBoolean(voidString);
         final ItemStack itemStack = blockMenu.getItemInSlot(ITEM_SLOT);
@@ -314,7 +317,7 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
 
     protected void onBreak(@Nonnull BlockBreakEvent event) {
         final Location location = event.getBlock().getLocation();
-        final BlockMenu blockMenu = BlockStorage.getInventory(event.getBlock());
+        final BlockMenu blockMenu = StorageCacheUtils.getMenu(event.getBlock().getLocation());
 
         if (blockMenu != null) {
             final QuantumCache cache = CACHES.remove(blockMenu.getLocation());
@@ -429,8 +432,8 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
             final ItemMeta itemMeta = itemStack.getItemMeta();
             final List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
             lore.add("");
-            lore.add(Theme.CLICK_INFO + "Voiding: " + Theme.PASSIVE + StringUtils.toTitleCase(String.valueOf(cache.isVoidExcess())));
-            lore.add(Theme.CLICK_INFO + "Amount: " + Theme.PASSIVE + cache.getAmount());
+            lore.add(Theme.CLICK_INFO + "满载清空输入: " + Theme.PASSIVE + BooleanHelper.enabledOrDisabled(cache.isVoidExcess()));
+            lore.add(Theme.CLICK_INFO + "数量: " + Theme.PASSIVE + cache.getAmount());
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
             itemStack.setAmount(1);
@@ -439,8 +442,9 @@ public class NetworkQuantumStorage extends SlimefunItem implements DistinctiveIt
     }
 
     private static void syncBlock(@Nonnull Location location, @Nonnull QuantumCache cache) {
-        BlockStorage.addBlockInfo(location, BS_AMOUNT, String.valueOf(cache.getAmount()));
-        BlockStorage.addBlockInfo(location, BS_VOID, String.valueOf(cache.isVoidExcess()));
+        var blockData = StorageCacheUtils.getBlock(location);
+        blockData.setData(BS_AMOUNT, String.valueOf(cache.getAmount()));
+        blockData.setData(BS_VOID, String.valueOf(cache.isVoidExcess()));
     }
 
     public static Map<Location, QuantumCache> getCaches() {

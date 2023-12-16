@@ -10,6 +10,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.attributes.DistinctiveItem;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -19,7 +20,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nonnull;
 
-public class NetworkCard extends SlimefunItem {
+public class NetworkCard extends SlimefunItem implements DistinctiveItem {
 
     private static final int[] SIZES = new int[]{
         4096,
@@ -31,6 +32,8 @@ public class NetworkCard extends SlimefunItem {
         1073741824,
         Integer.MAX_VALUE
     };
+
+    private static final String WIKI_PAGE = "Network-Memory-Card";
 
     private final int size;
 
@@ -46,12 +49,12 @@ public class NetworkCard extends SlimefunItem {
 
                 e.cancel();
                 if (card.getAmount() > 1) {
-                    player.sendMessage(Theme.WARNING + "Unstack cards before assigning an item.");
+                    player.sendMessage(Theme.WARNING + "请单独拿出一张内存卡，不要堆叠");
                     return;
                 }
 
                 if (isBlacklisted(stackToSet)) {
-                    player.sendMessage(Theme.WARNING + "This type of item cannot be stored in a Network Card.");
+                    player.sendMessage(Theme.WARNING + "该物品无法存储至内存卡中");
                     return;
                 }
 
@@ -66,7 +69,7 @@ public class NetworkCard extends SlimefunItem {
                     );
 
                     if (cardInstance.getAmount() > 0) {
-                        e.getPlayer().sendMessage(Theme.WARNING + "A card must be empty before trying to assign an item.");
+                        e.getPlayer().sendMessage(Theme.WARNING + "只有空内存卡才能分配物品");
                         return;
                     }
 
@@ -91,5 +94,15 @@ public class NetworkCard extends SlimefunItem {
 
     public static int[] getSizes() {
         return SIZES;
+    }
+
+    @Override
+    public void postRegister() {
+        addWikiPage(WIKI_PAGE);
+    }
+
+    @Override
+    public boolean canStack(@Nonnull ItemMeta sfItemMeta, @Nonnull ItemMeta itemMeta) {
+        return sfItemMeta.getPersistentDataContainer().equals(itemMeta.getPersistentDataContainer());
     }
 }

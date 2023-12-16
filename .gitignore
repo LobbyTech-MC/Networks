@@ -1,5 +1,9 @@
-# Project exclude paths
+/bin/
+/.settings/
 /target/
 /.idea/
 *.iml
-/dependency-reduced-pom.xml
+.project
+.classpath
+dependency-reduced-pom.xml
+.DS_Store

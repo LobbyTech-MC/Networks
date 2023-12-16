@@ -1,5 +1,7 @@
 package io.github.sefiraat.networks.slimefun.network;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.network.NodeType;
 import io.github.sefiraat.networks.utils.NetworkUtils;
@@ -14,13 +16,12 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import net.guizhanss.guizhanlib.minecraft.helper.MaterialHelper;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -81,9 +82,10 @@ public abstract class NetworkDirectional extends NetworkObject {
                 @Override
                 public void onPlayerPlace(@Nonnull BlockPlaceEvent event) {
                     NetworkStorage.removeNode(event.getBlock().getLocation());
-                    BlockStorage.addBlockInfo(event.getBlock(), OWNER_KEY, event.getPlayer().getUniqueId().toString());
-                    BlockStorage.addBlockInfo(event.getBlock(), DIRECTION, BlockFace.SELF.name());
-                    NetworkUtils.applyConfig(NetworkDirectional.this, BlockStorage.getInventory(event.getBlock()), event.getPlayer());
+                    var blockData = StorageCacheUtils.getBlock(event.getBlock().getLocation());
+                    blockData.setData(OWNER_KEY, event.getPlayer().getUniqueId().toString());
+                    blockData.setData(DIRECTION, BlockFace.SELF.name());
+                    NetworkUtils.applyConfig(NetworkDirectional.this, blockData.getBlockMenu(), event.getPlayer());
                 }
             },
             new BlockTicker() {
@@ -96,10 +98,9 @@ public abstract class NetworkDirectional extends NetworkObject {
                 }
 
                 @Override
-                public void tick(Block block, SlimefunItem slimefunItem, Config config) {
+                public void tick(Block block, SlimefunItem slimefunItem, SlimefunBlockData data) {
                     if (tick <= 1) {
-                        final BlockMenu blockMenu = BlockStorage.getInventory(block);
-                        onTick(blockMenu, block);
+                        onTick(data.getBlockMenu(), block);
                     }
                 }
 
@@ -123,7 +124,7 @@ public abstract class NetworkDirectional extends NetworkObject {
 
         for (BlockFace blockFace : VALID_FACES) {
             final Block block = blockMenu.getBlock().getRelative(blockFace);
-            final SlimefunItem slimefunItem = BlockStorage.check(block);
+            final SlimefunItem slimefunItem = StorageCacheUtils.getSfItem(block.getLocation());
             if (slimefunItem != null) {
                 switch (blockFace) {
                     case NORTH -> blockMenu.replaceExistingItem(getNorthSlot(), getDirectionalSlotPane(blockFace, slimefunItem, blockFace == direction));
@@ -154,7 +155,7 @@ public abstract class NetworkDirectional extends NetworkObject {
         BlockFace direction = SELECTED_DIRECTION_MAP.get(blockMenu.getLocation().clone());
 
         if (direction == null) {
-            direction = BlockFace.valueOf(BlockStorage.getLocationInfo(blockMenu.getLocation(), DIRECTION));
+            direction = BlockFace.valueOf(StorageCacheUtils.getData(blockMenu.getLocation(), DIRECTION));
             SELECTED_DIRECTION_MAP.put(blockMenu.getLocation().clone(), direction);
         }
         return direction;
@@ -191,12 +192,12 @@ public abstract class NetworkDirectional extends NetworkObject {
             @Override
             public void newInstance(@Nonnull BlockMenu blockMenu, @Nonnull Block b) {
                 final BlockFace direction;
-                final String string = BlockStorage.getLocationInfo(blockMenu.getLocation(), DIRECTION);
+                final String string = StorageCacheUtils.getData(blockMenu.getLocation(), DIRECTION);
 
                 if (string == null) {
                     // This likely means a block was placed before I made it directional
                     direction = BlockFace.SELF;
-                    BlockStorage.addBlockInfo(blockMenu.getLocation(), DIRECTION, BlockFace.SELF.name());
+                    StorageCacheUtils.setData(blockMenu.getLocation(), DIRECTION, BlockFace.SELF.name());
                 } else {
                     direction = BlockFace.valueOf(string);
                 }
@@ -245,10 +246,10 @@ public abstract class NetworkDirectional extends NetworkObject {
 
     @ParametersAreNonnullByDefault
     public void openDirection(Player player, BlockMenu blockMenu, BlockFace blockFace) {
-        final BlockMenu targetMenu = BlockStorage.getInventory(blockMenu.getBlock().getRelative(blockFace));
+        final BlockMenu targetMenu = StorageCacheUtils.getMenu(blockMenu.getBlock().getRelative(blockFace).getLocation());
         if (targetMenu != null) {
             final Location location = targetMenu.getLocation();
-            final SlimefunItem item = BlockStorage.check(location);
+            final SlimefunItem item = StorageCacheUtils.getSfItem(location);
             if (item.canUse(player, true)
                 && Slimefun.getProtectionManager().hasPermission(player, blockMenu.getLocation(), Interaction.INTERACT_BLOCK)
             ) {
@@ -260,7 +261,7 @@ public abstract class NetworkDirectional extends NetworkObject {
     @ParametersAreNonnullByDefault
     public void setDirection(BlockMenu blockMenu, BlockFace blockFace) {
         SELECTED_DIRECTION_MAP.put(blockMenu.getLocation().clone(), blockFace);
-        BlockStorage.addBlockInfo(blockMenu.getBlock(), DIRECTION, blockFace.name());
+        StorageCacheUtils.setData(blockMenu.getBlock().getLocation(), DIRECTION, blockFace.name());
     }
 
     @Nonnull
@@ -316,7 +317,7 @@ public abstract class NetworkDirectional extends NetworkObject {
     public static ItemStack getDirectionalSlotPane(@Nonnull BlockFace blockFace, @Nonnull SlimefunItem slimefunItem, boolean active) {
         final ItemStack displayStack = new CustomItemStack(
             slimefunItem.getItem(),
-            Theme.PASSIVE + "Direction " + blockFace.name() + " (" + ChatColor.stripColor(slimefunItem.getItemName()) + ")"
+            Theme.PASSIVE + "设置朝向: " + blockFace.name() + " (" + ChatColor.stripColor(slimefunItem.getItemName()) + ")"
         );
         final ItemMeta itemMeta = displayStack.getItemMeta();
         if (active) {
@@ -324,8 +325,8 @@ public abstract class NetworkDirectional extends NetworkObject {
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
         itemMeta.setLore(List.of(
-            Theme.CLICK_INFO + "Left Click: " + Theme.PASSIVE + "Set Direction",
-            Theme.CLICK_INFO + "Shift Left Click: " + Theme.PASSIVE + "Open Target Block"
+            Theme.CLICK_INFO + "左键点击: " + Theme.PASSIVE + "设置朝向",
+            Theme.CLICK_INFO + "Shift+左键点击: " + Theme.PASSIVE + "打开目标方块"
         ));
         displayStack.setItemMeta(itemMeta);
         return displayStack;
@@ -336,7 +337,7 @@ public abstract class NetworkDirectional extends NetworkObject {
         if (blockMaterial.isItem() && !blockMaterial.isAir()) {
             final ItemStack displayStack = new CustomItemStack(
                 blockMaterial,
-                Theme.PASSIVE + "Direction " + blockFace.name() + " (" + blockMaterial.name() + ")"
+                Theme.PASSIVE + "设置朝向 " + blockFace.name() + " (" + MaterialHelper.getName(blockMaterial) + ")"
             );
             final ItemMeta itemMeta = displayStack.getItemMeta();
             if (active) {
@@ -344,8 +345,8 @@ public abstract class NetworkDirectional extends NetworkObject {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
             itemMeta.setLore(List.of(
-                Theme.CLICK_INFO + "Left Click: " + Theme.PASSIVE + "Set Direction",
-                Theme.CLICK_INFO + "Shift Left Click: " + Theme.PASSIVE + "Open Target Block"
+                Theme.CLICK_INFO + "左键点击: " + Theme.PASSIVE + "设置朝向",
+                Theme.CLICK_INFO + "Shift+左键点击: " + Theme.PASSIVE + "打开目标方块"
             ));
             displayStack.setItemMeta(itemMeta);
             return displayStack;
@@ -353,7 +354,7 @@ public abstract class NetworkDirectional extends NetworkObject {
             Material material = active ? Material.GREEN_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE;
             return new CustomItemStack(
                 material,
-                ChatColor.GRAY + "Set direction: " + blockFace.name()
+                ChatColor.GRAY + "设置朝向: " + blockFace.name()
             );
         }
     }

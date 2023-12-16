@@ -7,7 +7,9 @@ import io.github.sefiraat.networks.slimefun.NetheoPlants;
 import io.github.sefiraat.networks.slimefun.NetworkSlimefunItems;
 import io.github.sefiraat.networks.slimefun.network.NetworkController;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.updater.GitHubBuildsUpdater;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
+import net.guizhanss.slimefun4.utils.WikiUtils;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bukkit.plugin.PluginManager;
@@ -18,6 +20,7 @@ import javax.annotation.Nullable;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class Networks extends JavaPlugin implements SlimefunAddon {
 
@@ -32,7 +35,7 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
     private SupportedPluginManager supportedPluginManager;
 
     public Networks() {
-        this.username = "Sefiraat";
+        this.username = "ybw0014";
         this.repo = "Networks";
         this.branch = "master";
     }
@@ -41,8 +44,16 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
     public void onEnable() {
         instance = this;
 
+        if (!getServer().getPluginManager().isPluginEnabled("GuizhanLibPlugin")) {
+            getLogger().log(Level.SEVERE, "本插件需要 鬼斩前置库插件(GuizhanLibPlugin) 才能运行!");
+            getLogger().log(Level.SEVERE, "从此处下载: https://50l.cc/gzlib");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         getLogger().info("########################################");
-        getLogger().info("         Networks - By Sefiraat         ");
+        getLogger().info("            Networks - 网络              ");
+        getLogger().info("       作者: Sefiraat 汉化: ybw0014      ");
         getLogger().info("########################################");
 
         saveDefaultConfig();
@@ -59,22 +70,19 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
     }
 
     public void tryUpdate() {
-        if (getConfig().getBoolean("auto-update")
-            && getDescription().getVersion().startsWith("DEV")
-        ) {
-            String updateLocation = MessageFormat.format("{0}/{1}/{2}", this.username, this.repo, this.branch);
-            GitHubBuildsUpdater updater = new GitHubBuildsUpdater(this, getFile(), updateLocation);
-            updater.start();
+        if (getConfig().getBoolean("auto-update") && getDescription().getVersion().startsWith("Build")) {
+            GuizhanUpdater.start(this, getFile(), username, repo, branch);
         }
     }
 
     public void setupSlimefun() {
         NetworkSlimefunItems.setup();
+        WikiUtils.setupJson(this);
         if (supportedPluginManager.isNetheopoiesis()){
             try {
                 NetheoPlants.setup();
             } catch (NoClassDefFoundError e) {
-                getLogger().severe("Netheopoiesis must be updated to meet Networks' requirements.");
+                getLogger().severe("你必须更新下界乌托邦才能让网络添加相关功能.");
             }
         }
     }
@@ -101,6 +109,11 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
     @Override
     public String getBugTrackerURL() {
         return MessageFormat.format("https://github.com/{0}/{1}/issues/", this.username, this.repo);
+    }
+
+    @Nonnull
+    public String getWikiURL() {
+        return "https://slimefun-addons-wiki.guizhanss.cn/networks/{0}";
     }
 
     @Nonnull

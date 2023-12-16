@@ -1,6 +1,7 @@
 package io.github.sefiraat.networks.slimefun.network;
 
 import com.bgsoftware.wildchests.api.WildChestsAPI;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.network.NodeDefinition;
@@ -11,7 +12,6 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -71,10 +71,20 @@ public class NetworkVanillaPusher extends NetworkDirectional {
         final BlockFace direction = getCurrentDirection(blockMenu);
         final Block block = blockMenu.getBlock();
         final Block targetBlock = blockMenu.getBlock().getRelative(direction);
-        final UUID uuid = UUID.fromString(BlockStorage.getLocationInfo(block.getLocation(), OWNER_KEY));
+        // Fix for early vanilla pusher release
+        final String ownerUUID = StorageCacheUtils.getData(block.getLocation(), OWNER_KEY);
+        if (ownerUUID == null) {
+            return;
+        }
+        final UUID uuid = UUID.fromString(ownerUUID);
         final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
 
-        if (!Slimefun.getProtectionManager().hasPermission(offlinePlayer, targetBlock, Interaction.INTERACT_BLOCK)) {
+        // dirty fix
+        try {
+            if (!Slimefun.getProtectionManager().hasPermission(offlinePlayer, targetBlock, Interaction.INTERACT_BLOCK)) {
+                return;
+            }
+        } catch (NullPointerException ex) {
             return;
         }
 
@@ -94,18 +104,18 @@ public class NetworkVanillaPusher extends NetworkDirectional {
         boolean wildChests = Networks.getSupportedPluginManager().isWildChests();
         boolean isChest = wildChests && WildChestsAPI.getChest(targetBlock.getLocation()) != null;
 
-        sendDebugMessage(block.getLocation(), "WildChests detected: " + wildChests);
-        sendDebugMessage(block.getLocation(), "Block detected as chest: " + isChest);
+        sendDebugMessage(block.getLocation(), "WildChests 已安装：" + wildChests);
+        sendDebugMessage(block.getLocation(), "该方块是否被 WildChest 判断为方块：" + isChest);
 
         if (inventory instanceof FurnaceInventory furnace) {
             handleFurnace(stack, furnace);
         } else if (inventory instanceof BrewerInventory brewer) {
             handleBrewingStand(stack, brewer);
         } else if (wildChests && isChest) {
-            sendDebugMessage(block.getLocation(), "WildChest test failed, escaping");
+            sendDebugMessage(block.getLocation(), "WildChest 测试失败！");
             return;
         } else if (InvUtils.fits(holder.getInventory(), stack)) {
-            sendDebugMessage(block.getLocation(), "WildChest test passed.");
+            sendDebugMessage(block.getLocation(), "WildChest 测试成功。");
             holder.getInventory().addItem(stack);
             stack.setAmount(0);
         }

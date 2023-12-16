@@ -29,7 +29,9 @@ public final class SupportedRecipes {
                     } else {
                         itemStacks[i] = new ItemStack(itemStack.clone());
                     }
-                    i++;
+                    if (++i >= 9) {
+                        break;
+                    }
                 }
                 SupportedRecipes.addRecipe(itemStacks, item.getRecipeOutput());
             }

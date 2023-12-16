@@ -1,5 +1,6 @@
 package io.github.sefiraat.networks.slimefun.network;
 
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.NodeDefinition;
@@ -13,9 +14,7 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
-import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
@@ -35,8 +34,8 @@ public class NetworkPowerDisplay extends NetworkObject {
 
     private static final CustomItemStack EMPTY = new CustomItemStack(
         Material.RED_STAINED_GLASS_PANE,
-        Theme.CLICK_INFO + "Status",
-        Theme.PASSIVE + "Disconnected"
+        Theme.CLICK_INFO + "状态",
+        Theme.PASSIVE + "未连接"
     );
 
     public NetworkPowerDisplay(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
@@ -49,8 +48,8 @@ public class NetworkPowerDisplay extends NetworkObject {
                 }
 
                 @Override
-                public void tick(Block block, SlimefunItem slimefunItem, Config config) {
-                    BlockMenu blockMenu = BlockStorage.getInventory(block);
+                public void tick(Block block, SlimefunItem slimefunItem, SlimefunBlockData data) {
+                    BlockMenu blockMenu = data.getBlockMenu();
                     if (blockMenu != null) {
                         addToRegistry(block);
                         setDisplay(blockMenu);
@@ -101,8 +100,8 @@ public class NetworkPowerDisplay extends NetworkObject {
     private static CustomItemStack getChargeStack(long charge) {
         return new CustomItemStack(
             Material.GREEN_STAINED_GLASS_PANE,
-            Theme.CLICK_INFO + "Status",
-            Theme.PASSIVE + "Current Network Charge: " + charge + "j"
+            Theme.CLICK_INFO + "状态",
+            Theme.PASSIVE + "网络电力: " + charge + "J"
         );
     }
 }

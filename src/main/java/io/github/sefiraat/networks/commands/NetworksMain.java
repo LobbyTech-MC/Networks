@@ -61,14 +61,14 @@ public class NetworksMain implements CommandExecutor {
     public void fillQuantum(Player player, int amount) {
         final ItemStack itemStack = player.getInventory().getItemInMainHand();
         if (itemStack == null || itemStack.getType() == Material.AIR) {
-            player.sendMessage(Theme.ERROR + "Item in hand must be a Quantum Storage.");
+            player.sendMessage(Theme.ERROR + "你必须手持量子存储");
             return;
         }
 
         SlimefunItem slimefunItem = SlimefunItem.getByItem(itemStack);
 
         if (!(slimefunItem instanceof NetworkQuantumStorage)) {
-            player.sendMessage(Theme.ERROR + "Item in hand must be a Quantum Storage.");
+            player.sendMessage(Theme.ERROR + "你手中的物品必须为量子存储");
             return;
         }
 
@@ -80,7 +80,7 @@ public class NetworksMain implements CommandExecutor {
         );
 
         if (quantumCache == null || quantumCache.getItemStack() == null) {
-            player.sendMessage(Theme.ERROR + "This card has either not been set to an item yet or is a corrupted Quantum Storage.");
+            player.sendMessage(Theme.ERROR + "量子存储未指定物品或已损坏");
             return;
         }
 
@@ -88,6 +88,6 @@ public class NetworksMain implements CommandExecutor {
         DataTypeMethods.setCustom(meta, Keys.QUANTUM_STORAGE_INSTANCE, PersistentQuantumStorageType.TYPE, quantumCache);
         quantumCache.updateMetaLore(meta);
         itemStack.setItemMeta(meta);
-        player.sendMessage(Theme.SUCCESS + "Item updated");
+        player.sendMessage(Theme.SUCCESS + "已更新物品");
     }
 }

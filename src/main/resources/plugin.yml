@@ -11,6 +11,7 @@ softdepend:
   - GuizhanLibPlugin
   - InfinityExpansion
   - Netheopoiesis
+  - SlimeHUD
   - WildChests
 commands:
   networks:

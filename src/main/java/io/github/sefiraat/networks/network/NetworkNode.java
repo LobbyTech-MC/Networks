@@ -103,6 +103,7 @@ public class NetworkNode {
             // Kill additional controllers if it isn't the root
             if (testType == NodeType.CONTROLLER && !testLocation.equals(getRoot().nodePosition)) {
                 killAdditionalController(testLocation);
+                continue;
             }
 
             // Check if it's in the network already and, if not, create a child node and propagate further.
@@ -133,7 +134,7 @@ public class NetworkNode {
                 }
             };
             runnable.runTask(Networks.getInstance());
-            NetworkStorage.getAllNetworkObjects().remove(location);
+            NetworkController.wipeNetwork(location);
         }
     }
 

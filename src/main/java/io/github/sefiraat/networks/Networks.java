@@ -3,13 +3,13 @@ package io.github.sefiraat.networks;
 import io.github.sefiraat.networks.commands.NetworksMain;
 import io.github.sefiraat.networks.managers.ListenerManager;
 import io.github.sefiraat.networks.managers.SupportedPluginManager;
-import io.github.sefiraat.networks.slimefun.NetheoPlants;
+import io.github.sefiraat.networks.integrations.HudCallbacks;
+import io.github.sefiraat.networks.integrations.NetheoPlants;
 import io.github.sefiraat.networks.slimefun.NetworkSlimefunItems;
 import io.github.sefiraat.networks.slimefun.network.NetworkController;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
-import net.guizhanss.slimefun4.utils.WikiUtils;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.updater.BlobBuildUpdater;
+
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bukkit.plugin.PluginManager;
@@ -70,19 +70,25 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
     }
 
     public void tryUpdate() {
-        if (getConfig().getBoolean("auto-update") && getDescription().getVersion().startsWith("Build")) {
-            GuizhanUpdater.start(this, getFile(), username, repo, branch);
+        if (getConfig().getBoolean("auto-update") && getDescription().getVersion().startsWith("Dev")) {
+            new BlobBuildUpdater(this, getFile(), "Networks", "Dev").start();
         }
     }
 
     public void setupSlimefun() {
         NetworkSlimefunItems.setup();
-        WikiUtils.setupJson(this);
-        if (supportedPluginManager.isNetheopoiesis()){
+        if (supportedPluginManager.isNetheopoiesis()) {
             try {
                 NetheoPlants.setup();
             } catch (NoClassDefFoundError e) {
                 getLogger().severe("你必须更新下界乌托邦才能让网络添加相关功能.");
+            }
+        }
+        if (supportedPluginManager.isSlimeHud()) {
+            try {
+                HudCallbacks.setup();
+            } catch (NoClassDefFoundError e) {
+                getLogger().severe("SlimeHUD must be updated to meet Networks' requirements.");
             }
         }
     }

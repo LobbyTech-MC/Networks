@@ -75,4 +75,14 @@ public class DataTypeMethods {
     public static <T, Z> void setCustom(@Nonnull PersistentDataHolder holder, @Nonnull NamespacedKey key, @Nonnull PersistentDataType<T, Z> type, @Nonnull Z obj) {
         holder.getPersistentDataContainer().set(key, type, obj);
     }
+
+    /**
+     * Remove a custom {@link PersistentDataType} from a {@link PersistentDataContainer}
+     *
+     * @param holder The {@link PersistentDataHolder} to remove the data from
+     * @param key    The key of the data to remove
+     */
+    public static <T, Z> void removeCustom(@Nonnull PersistentDataHolder holder, @Nonnull NamespacedKey key) {
+        holder.getPersistentDataContainer().remove(key);
+    }
 }

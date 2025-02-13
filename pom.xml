@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.github.sefiraat</groupId>
-    <artifactId>networks</artifactId>
-    <version>MODIFIED</version>
+    <groupId>com.ytdd9527.networksexpansion</groupId>
+    <artifactId>NetworksExpansion</artifactId>
+    <version>Special-Version-7</version>
 
     <distributionManagement>
         <repository>
@@ -66,6 +66,12 @@
                             <pattern>org.bstats</pattern>
                             <shadedPattern>io.github.sefiraat.networks.bstats</shadedPattern>
                         </relocation>
+
+                        <relocation>
+                            <pattern>io.papermc.lib</pattern>
+                            <shadedPattern>dev.sefiraat.cultivation.paperlib</shadedPattern>
+                        </relocation>
+
                     </relocations>
                     <filters>
                         <filter>
@@ -84,6 +90,25 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- Plugin compiler + lombok configuration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.34</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
             </plugin>
         </plugins>
         <defaultGoal>clean package</defaultGoal>
@@ -123,6 +148,14 @@
             <id>bg-repo</id>
             <url>https://repo.bg-software.com/repository/api/</url>
         </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://papermc.io/repo/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>rosewood-repo</id>
+            <url>https://repo.rosewooddev.io/repository/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -138,12 +171,6 @@
             <artifactId>Slimefun4</artifactId>
             <version>2024.3.1</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>dev.sefiraat</groupId>
-            <artifactId>SefiLib</artifactId>
-            <version>0.2.6</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Tools etc. -->
@@ -168,59 +195,99 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- Useful Annotation -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.36</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Useful PDC Types -->
         <dependency>
-            <groupId>de.jeff_media</groupId>
+            <groupId>com.jeff-media</groupId>
             <artifactId>MorePersistentDataTypes</artifactId>
-            <version>1.0.0</version>
+            <version>2.4.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Pinyin Library -->
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>pinyin</artifactId>
+            <version>0.4.0</version>
             <scope>compile</scope>
         </dependency>
 
         <!-- Supported Plugins -->
+        <!-- Support Infinity Storage -->
         <dependency>
-            <groupId>io.github.mooy1</groupId>
+            <groupId>com.github.SlimefunGuguProject</groupId>
             <artifactId>InfinityExpansion</artifactId>
-            <version>90e11bc</version>
+            <version>3c5db3650a</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Support Netheopoiesis -->
         <dependency>
             <groupId>com.github.Sefiraat</groupId>
             <artifactId>Netheopoiesis</artifactId>
             <version>8d1af6c570</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Support SlimeHUD -->
         <dependency>
             <groupId>com.github.schntgaispock</groupId>
             <artifactId>SlimeHUD</artifactId>
             <version>1.2.7</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Support WildChest -->
         <dependency>
             <groupId>com.bgsoftware</groupId>
             <artifactId>WildChestsAPI</artifactId>
             <version>2024.1</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Support WildStacker -->
+        <dependency>
+            <groupId>com.bgsoftware</groupId>
+            <artifactId>WildStackerAPI</artifactId>
+            <version>2023.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Support RoseStacker -->
+        <dependency>
+            <groupId>dev.rosewood</groupId>
+            <artifactId>rosestacker</artifactId>
+            <version>1.5.23</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Support mcMMO -->
         <dependency>
             <groupId>com.gmail.nossr50.mcMMO</groupId>
             <artifactId>mcMMO</artifactId>
             <version>2.2.017</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- 汉化库 -->
+        <!-- Chinese localization library -->
         <dependency>
             <groupId>net.guizhanss</groupId>
             <artifactId>GuizhanLibPlugin</artifactId>
-            <version>1.5.0</version>
+            <version>1.7.6</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Useful Library -->
+        <dependency>
+            <groupId>dev.sefiraat</groupId>
+            <artifactId>SefiLib</artifactId>
+            <version>0.2.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Support FluffyMachines -->
+        <dependency>
+            <groupId>com.github.SlimefunGuguProject</groupId>
+            <artifactId>FluffyMachines</artifactId>
+            <version>035fe56381</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/FluffyMachines.jar</systemPath>
+        </dependency>
     </dependencies>
-
-
 </project>

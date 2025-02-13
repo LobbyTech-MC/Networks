@@ -1,5 +1,6 @@
 package io.github.sefiraat.networks.slimefun.groups;
 
+import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.slimefun.NetworksItemGroups;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -27,11 +28,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MainFlexGroup extends FlexItemGroup {
 
 	/*
+
     private static final ItemStack DOCS_ITEM_STACK = Theme.themedItemStack(
-        Material.BOOK,
-        Theme.GUIDE,
-        "附属 Wiki",
-        "点击获取网络的 Wiki 链接"
+            Networks.getLocalizationService().getIcon("docs_icon", Material.BOOK),
+            Theme.GUIDE
     );
     */
 
@@ -43,14 +43,14 @@ public class MainFlexGroup extends FlexItemGroup {
     private static final int NETWORK_QUANTUMS = 12;
 
     private static final int[] HEADER = new int[]{
-        0, 1, 2, 3, 4, 5, 6, 7, 8
+            0, 1, 2, 3, 4, 5, 6, 7, 8
     };
     private static final int[] FOOTER = new int[]{
-        45, 46, 47, 48, 49, 50, 51, 52, 53
+            45, 46, 47, 48, 49, 50, 51, 52, 53
     };
 
-    public MainFlexGroup(NamespacedKey key, ItemStack item) {
-        super(key, item);
+    public MainFlexGroup(NamespacedKey key, ItemStack item, int tier) {
+        super(key, item, tier);
     }
 
     @Override
@@ -89,12 +89,12 @@ public class MainFlexGroup extends FlexItemGroup {
 
         // Back
         menu.replaceExistingItem(
-            GUIDE_BACK,
-            ChestMenuUtils.getBackButton(
-                player,
-                "",
-                ChatColor.GRAY + Slimefun.getLocalization().getMessage(player, "guide.back.guide")
-            )
+                GUIDE_BACK,
+                ChestMenuUtils.getBackButton(
+                        player,
+                        "",
+                        ChatColor.GRAY + Slimefun.getLocalization().getMessage(player, "guide.back.guide")
+                )
         );
         menu.addMenuClickHandler(GUIDE_BACK, (player1, slot, itemStack, clickAction) -> {
             SlimefunGuide.openMainMenu(profile, mode, 1);
@@ -105,7 +105,7 @@ public class MainFlexGroup extends FlexItemGroup {
         // Docs
         menu.replaceExistingItem(DOCS, DOCS_ITEM_STACK);
         menu.addMenuClickHandler(DOCS, (player1, i1, itemStack1, clickAction) -> {
-            final TextComponent link = new TextComponent("单击此处访问Wiki");
+            final TextComponent link = new TextComponent(Networks.getLocalizationService().getString("icons.docs_icon.click_to_visit_wiki"));
             link.setColor(ChatColor.YELLOW);
             link.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/Sefiraat/Networks/wiki/"));
             player.spigot().sendMessage(link);
@@ -116,25 +116,26 @@ public class MainFlexGroup extends FlexItemGroup {
         // Materials
         menu.replaceExistingItem(MATERIALS, NetworksItemGroups.MATERIALS.getItem(player));
         menu.addMenuClickHandler(MATERIALS, (player1, i1, itemStack1, clickAction) ->
-            openPage(profile, NetworksItemGroups.MATERIALS, mode, 1)
+                openPage(profile, NetworksItemGroups.MATERIALS, mode, 1)
         );
 
         // Tools
         menu.replaceExistingItem(TOOLS, NetworksItemGroups.TOOLS.getItem(player));
         menu.addMenuClickHandler(TOOLS, (player1, i1, itemStack1, clickAction) ->
-            openPage(profile, NetworksItemGroups.TOOLS, mode, 1)
+                openPage(profile, NetworksItemGroups.TOOLS, mode, 1)
         );
 
         // Network Items
         menu.replaceExistingItem(NETWORK_ITEMS, NetworksItemGroups.NETWORK_ITEMS.getItem(player));
         menu.addMenuClickHandler(NETWORK_ITEMS, (player1, i1, itemStack1, clickAction) ->
-            openPage(profile, NetworksItemGroups.NETWORK_ITEMS, mode, 1)
+                openPage(profile, NetworksItemGroups.NETWORK_ITEMS, mode, 1)
         );
+
 
         // Network Quantums
         menu.replaceExistingItem(NETWORK_QUANTUMS, NetworksItemGroups.NETWORK_QUANTUMS.getItem(player));
         menu.addMenuClickHandler(NETWORK_QUANTUMS, (player1, i1, itemStack1, clickAction) ->
-            openPage(profile, NetworksItemGroups.NETWORK_QUANTUMS, mode, 1)
+                openPage(profile, NetworksItemGroups.NETWORK_QUANTUMS, mode, 1)
         );
     }
 

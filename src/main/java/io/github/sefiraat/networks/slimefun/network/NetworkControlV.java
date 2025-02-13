@@ -1,23 +1,23 @@
 package io.github.sefiraat.networks.slimefun.network;
 
+import com.balugaq.netex.api.enums.FeedbackType;
+import com.balugaq.netex.api.helpers.Icon;
 import com.gmail.nossr50.mcMMO;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import dev.sefiraat.sefilib.misc.ParticleUtils;
 import dev.sefiraat.sefilib.world.LocationUtils;
-import io.github.bakedlibs.dough.blocks.BlockPosition;
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.managers.SupportedPluginManager;
 import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.sefiraat.networks.network.NodeType;
 import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
-import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.blocks.BlockPosition;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
@@ -36,10 +36,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@SuppressWarnings("deprecation")
 public class NetworkControlV extends NetworkDirectional {
 
     private static final int[] BACKGROUND_SLOTS = new int[]{
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 15, 17, 18, 20, 22, 23, 24, 26, 27, 28, 30, 31, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 15, 17, 18, 20, 22, 23, 24, 26, 27, 28, 30, 31, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44
     };
     private static final int[] TEMPLATE_BACKGROUND = new int[]{16};
     private static final int TEMPLATE_SLOT = 25;
@@ -50,12 +51,7 @@ public class NetworkControlV extends NetworkDirectional {
     private static final int UP_SLOT = 14;
     private static final int DOWN_SLOT = 32;
     private static final int REQUIRED_POWER = 100;
-
     private final Set<BlockPosition> blockCache = new HashSet<>();
-
-    public static final CustomItemStack TEMPLATE_BACKGROUND_STACK = new CustomItemStack(
-        Material.BLUE_STAINED_GLASS_PANE, Theme.PASSIVE + "粘贴物品模版"
-    );
 
     public NetworkControlV(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe, NodeType.PASTER);
@@ -76,19 +72,22 @@ public class NetworkControlV extends NetworkDirectional {
     }
 
     private void tryPasteBlock(@Nonnull BlockMenu blockMenu) {
-        final NodeDefinition definition = NetworkStorage.getAllNetworkObjects().get(blockMenu.getLocation());
+        final NodeDefinition definition = NetworkStorage.getNode(blockMenu.getLocation());
 
         if (definition == null || definition.getNode() == null) {
+            sendFeedback(blockMenu.getLocation(), FeedbackType.NO_NETWORK_FOUND);
             return;
         }
 
         if (definition.getNode().getRoot().getRootPower() < REQUIRED_POWER) {
+            sendFeedback(blockMenu.getLocation(), FeedbackType.NOT_ENOUGH_POWER);
             return;
         }
 
         final BlockFace direction = getCurrentDirection(blockMenu);
 
         if (direction == BlockFace.SELF) {
+            sendFeedback(blockMenu.getLocation(), FeedbackType.NO_DIRECTION_SET);
             return;
         }
 
@@ -96,12 +95,22 @@ public class NetworkControlV extends NetworkDirectional {
         final BlockPosition targetPosition = new BlockPosition(targetBlock);
 
         if (this.blockCache.contains(targetPosition)) {
+            sendFeedback(blockMenu.getLocation(), FeedbackType.BLOCK_ALREADY_PASTED);
+            return;
+        }
+
+        final UUID uuid = UUID.fromString(StorageCacheUtils.getData(blockMenu.getLocation(), OWNER_KEY));
+        final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+
+        if (!Slimefun.getProtectionManager().hasPermission(offlinePlayer, targetBlock, Interaction.PLACE_BLOCK)) {
+            sendFeedback(blockMenu.getLocation(), FeedbackType.NO_PERMISSION);
             return;
         }
 
         final Material material = targetBlock.getType();
 
-        if (!material.isAir()) {
+        if (material != Material.AIR) {
+            sendFeedback(blockMenu.getLocation(), FeedbackType.BLOCK_CANNOT_BE_AIR);
             return;
         }
 
@@ -114,19 +123,14 @@ public class NetworkControlV extends NetworkDirectional {
         final Material templateMaterial = templateStack.getType();
 
         if (!templateMaterial.isBlock() || SlimefunTag.SENSITIVE_MATERIALS.isTagged(templateMaterial)) {
+            sendFeedback(blockMenu.getLocation(), FeedbackType.INVALID_TEMPLATE);
             return;
         }
 
         final SlimefunItem slimefunItem = SlimefunItem.getByItem(templateStack);
 
         if (slimefunItem != null) {
-            return;
-        }
-
-        final UUID uuid = UUID.fromString(StorageCacheUtils.getData(blockMenu.getLocation(), OWNER_KEY));
-        final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(uuid);
-
-        if (!Slimefun.getProtectionManager().hasPermission(offlinePlayer, targetBlock, Interaction.PLACE_BLOCK)) {
+            sendFeedback(blockMenu.getLocation(), FeedbackType.INVALID_TEMPLATE);
             return;
         }
 
@@ -134,6 +138,7 @@ public class NetworkControlV extends NetworkDirectional {
         final ItemStack fetchedStack = definition.getNode().getRoot().getItemStack(request);
 
         if (fetchedStack == null || fetchedStack.getAmount() < 1) {
+            sendFeedback(blockMenu.getLocation(), FeedbackType.NOT_ENOUGH_RESOURCES);
             return;
         }
 
@@ -141,14 +146,19 @@ public class NetworkControlV extends NetworkDirectional {
         Bukkit.getScheduler().runTask(Networks.getInstance(), bukkitTask -> {
             targetBlock.setType(fetchedStack.getType(), true);
             if (SupportedPluginManager.getInstance().isMcMMO()) {
-                mcMMO.getPlaceStore().setTrue(targetBlock);
+                try {
+                    mcMMO.getChunkManager().setTrue(targetBlock);
+                } catch (NoClassDefFoundError e) {
+                    mcMMO.getPlaceStore().setTrue(targetBlock);
+                }
             }
             ParticleUtils.displayParticleRandomly(
-                LocationUtils.centre(targetBlock.getLocation()),
-                Particle.ELECTRIC_SPARK,
-                1,
-                5
+                    LocationUtils.centre(targetBlock.getLocation()),
+                    Particle.ELECTRIC_SPARK,
+                    1,
+                    5
             );
+            sendFeedback(blockMenu.getLocation(), FeedbackType.WORKING);
         });
     }
 
@@ -166,8 +176,8 @@ public class NetworkControlV extends NetworkDirectional {
 
     @Nullable
     @Override
-    protected CustomItemStack getOtherBackgroundStack() {
-        return TEMPLATE_BACKGROUND_STACK;
+    protected ItemStack getOtherBackgroundStack() {
+        return Icon.CONTROL_V_TEMPLATE_BACKGROUND_STACK;
     }
 
     @Override

@@ -1,7 +1,9 @@
 package io.github.sefiraat.networks.network.stackcaches;
 
+import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.utils.Theme;
-import net.guizhanss.guizhanlib.minecraft.helper.MaterialHelper;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -10,23 +12,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
+@Getter
 public class CardInstance extends ItemStackCache {
 
-    private int amount;
     private final int limit;
+    private int amount;
 
     public CardInstance(@Nullable ItemStack itemStack, int amount, int limit) {
         super(itemStack);
         this.amount = amount;
         this.limit = limit;
-    }
-
-    public int getAmount() {
-        return this.amount;
-    }
-
-    public int getLimit() {
-        return this.limit;
     }
 
     public void setAmount(int amount) {
@@ -73,17 +68,9 @@ public class CardInstance extends ItemStackCache {
 
     public String getLoreLine() {
         if (this.getItemStack() == null) {
-            return Theme.WARNING + "空";
+            return Networks.getLocalizationService().getString("messages.normal-operation.memory_card.empty");
         }
-        ItemMeta itemMeta = this.getItemMeta();
-        String name;
-        if (itemMeta != null && itemMeta.hasDisplayName()) {
-            name = ChatColor.stripColor(itemMeta.getDisplayName());
-        } else if (this.getItemType() != null) {
-            name = MaterialHelper.getName(this.getItemType());
-        } else {
-            name = "未知/错误";
-        }
+        String name = ChatColor.stripColor(ItemStackHelper.getDisplayName(getItemStack()));
         return Theme.CLICK_INFO + name + ": " + Theme.PASSIVE + this.amount;
     }
 }

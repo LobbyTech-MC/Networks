@@ -1,11 +1,13 @@
 package io.github.sefiraat.networks.network.stackcaches;
 
+import lombok.ToString;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import javax.annotation.Nullable;
 
+@ToString
 public class ItemStackCache {
 
     private ItemStack itemStack;

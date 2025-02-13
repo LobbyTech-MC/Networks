@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 
 public class NetworkStorage extends BarrelIdentity {
 
-    public NetworkStorage(Location location, ItemStack itemStack, int amount) {
+    public NetworkStorage(Location location, ItemStack itemStack, long amount) {
         super(location, itemStack, amount, BarrelType.NETWORKS);
     }
 
@@ -49,12 +49,12 @@ public class NetworkStorage extends BarrelIdentity {
 
 
     @Override
-    public int getInputSlot() {
-        return NetworkQuantumStorage.INPUT_SLOT;
+    public int[] getInputSlot() {
+        return new int[]{NetworkQuantumStorage.INPUT_SLOT};
     }
 
     @Override
-    public int getOutputSlot() {
-        return NetworkQuantumStorage.OUTPUT_SLOT;
+    public int[] getOutputSlot() {
+        return new int[]{NetworkQuantumStorage.OUTPUT_SLOT};
     }
 }

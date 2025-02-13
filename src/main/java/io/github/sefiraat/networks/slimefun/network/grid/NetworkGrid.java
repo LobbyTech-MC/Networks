@@ -21,16 +21,16 @@ import java.util.Map;
 public class NetworkGrid extends AbstractGrid {
 
     private static final int[] BACKGROUND_SLOTS = {
-        17, 26
+            17, 26
     };
 
     private static final int[] DISPLAY_SLOTS = {
-        0, 1, 2, 3, 4, 5, 6, 7,
-        9, 10, 11, 12, 13, 14, 15, 16,
-        18, 19, 20, 21, 22, 23, 24, 25,
-        27, 28, 29, 30, 31, 32, 33, 34,
-        36, 37, 38, 39, 40, 41, 42, 43,
-        45, 46, 47, 48, 49, 50, 51, 52
+            0, 1, 2, 3, 4, 5, 6, 7,
+            9, 10, 11, 12, 13, 14, 15, 16,
+            18, 19, 20, 21, 22, 23, 24, 25,
+            27, 28, 29, 30, 31, 32, 33, 34,
+            36, 37, 38, 39, 40, 41, 42, 43,
+            45, 46, 47, 48, 49, 50, 51, 52
     };
 
     private static final int INPUT_SLOT = 8;
@@ -60,8 +60,8 @@ public class NetworkGrid extends AbstractGrid {
 
             @Override
             public boolean canOpen(@Nonnull Block block, @Nonnull Player player) {
-                return NetworkSlimefunItems.NETWORK_GRID.canUse(player, false)
-                    && Slimefun.getProtectionManager().hasPermission(player, block.getLocation(), Interaction.INTERACT_BLOCK);
+                return player.hasPermission("slimefun.inventory.bypass") || (NetworkSlimefunItems.NETWORK_GRID.canUse(player, false)
+                        && Slimefun.getProtectionManager().hasPermission(player, block.getLocation(), Interaction.INTERACT_BLOCK));
             }
 
             @Override
@@ -104,7 +104,8 @@ public class NetworkGrid extends AbstractGrid {
                 menu.replaceExistingItem(getFilterSlot(), getFilterStack());
                 menu.addMenuClickHandler(getFilterSlot(), (p, slot, item, action) -> {
                     GridCache gridCache = getCacheMap().get(menu.getLocation());
-                    return setFilter(p, menu, gridCache, action);
+                    setFilter(p, menu, gridCache, action);
+                    return false;
                 });
 
                 for (int displaySlot : getDisplaySlots()) {

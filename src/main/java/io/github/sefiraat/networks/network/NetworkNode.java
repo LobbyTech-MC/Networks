@@ -7,6 +7,8 @@ import io.github.sefiraat.networks.slimefun.network.NetworkController;
 import io.github.sefiraat.networks.slimefun.network.NetworkPowerNode;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import lombok.Getter;
+import lombok.ToString;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -17,22 +19,26 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
+@ToString
 public class NetworkNode {
 
     protected static final Set<BlockFace> VALID_FACES = EnumSet.of(
-        BlockFace.UP,
-        BlockFace.DOWN,
-        BlockFace.NORTH,
-        BlockFace.EAST,
-        BlockFace.SOUTH,
-        BlockFace.WEST
+            BlockFace.UP,
+            BlockFace.DOWN,
+            BlockFace.NORTH,
+            BlockFace.EAST,
+            BlockFace.SOUTH,
+            BlockFace.WEST
     );
 
+    @Getter
     protected final Set<NetworkNode> childrenNodes = new HashSet<>();
+    @Getter
     protected NetworkNode parent = null;
     protected NetworkRoot root = null;
     protected Location nodePosition;
     protected NodeType nodeType;
+    @Getter
     protected long power;
 
     public NetworkNode(Location location, NodeType type) {
@@ -76,23 +82,15 @@ public class NetworkNode {
         this.root = root;
     }
 
-    public NetworkNode getParent() {
-        return parent;
-    }
-
     private void setParent(NetworkNode parent) {
         this.parent = parent;
-    }
-
-    public Set<NetworkNode> getChildrenNodes() {
-        return this.childrenNodes;
     }
 
     public void addAllChildren() {
         // Loop through all possible locations
         for (BlockFace face : VALID_FACES) {
             final Location testLocation = this.nodePosition.clone().add(face.getDirection());
-            final NodeDefinition testDefinition = NetworkStorage.getAllNetworkObjects().get(testLocation);
+            final NodeDefinition testDefinition = NetworkStorage.getNode(testLocation);
 
             if (testDefinition == null) {
                 continue;
@@ -116,7 +114,7 @@ public class NetworkNode {
                 addChild(networkNode);
                 networkNode.addAllChildren();
                 testDefinition.setNode(networkNode);
-                NetworkStorage.getAllNetworkObjects().put(testLocation, testDefinition);
+                NetworkStorage.registerNode(testLocation, testDefinition);
             }
         }
     }
@@ -128,7 +126,8 @@ public class NetworkNode {
             BukkitRunnable runnable = new BukkitRunnable() {
                 @Override
                 public void run() {
-                	NetworkController.wipeNetwork(location);
+                    //fix #99
+                    NetworkController.wipeNetwork(location);
                     location.getWorld().dropItemNaturally(location, sfItem.getItem());
                     location.getBlock().setType(Material.AIR);
                 }
@@ -148,9 +147,5 @@ public class NetworkNode {
             return blockCharge;
         }
         return 0;
-    }
-
-    public long getPower() {
-        return this.power;
     }
 }

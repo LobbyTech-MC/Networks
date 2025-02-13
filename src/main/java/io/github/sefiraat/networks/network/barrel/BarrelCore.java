@@ -17,7 +17,7 @@ public interface BarrelCore {
 
     void depositItemStack(ItemStack[] itemsToDeposit);
 
-    int getInputSlot();
+    int[] getInputSlot();
 
-    int getOutputSlot();
+    int[] getOutputSlot();
 }

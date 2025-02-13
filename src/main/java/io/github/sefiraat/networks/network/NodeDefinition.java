@@ -4,8 +4,8 @@ public class NodeDefinition {
 
     private final NodeType type;
     private final long timeRegistered;
-    private NetworkNode node;
     private final int charge;
+    private NetworkNode node;
 
     public NodeDefinition(NodeType type) {
         this(type, 0);
@@ -25,12 +25,12 @@ public class NodeDefinition {
         return node;
     }
 
-    public int getCharge() {
-        return charge;
-    }
-
     public void setNode(NetworkNode node) {
         this.node = node;
+    }
+
+    public int getCharge() {
+        return charge;
     }
 
     public boolean isExpired() {

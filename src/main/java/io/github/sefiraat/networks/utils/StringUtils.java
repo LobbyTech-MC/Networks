@@ -1,15 +1,49 @@
 package io.github.sefiraat.networks.utils;
 
+import lombok.experimental.UtilityClass;
+
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+@UtilityClass
 public final class StringUtils {
 
-    private StringUtils() {
-        throw new IllegalStateException("Utility class");
-    }
+    /**
+     * List of names to be given to ArmourStands, invisible but mods and Minimaps can see them :)
+     */
+    @Nonnull
+    private static final List<String> EGG_NAMES = Arrays.asList(
+            "TheBusyBiscuit",
+            "Alessio",
+            "Walshy",
+            "Jeff",
+            "Seggan",
+            "BOOMER_1",
+            "svr333",
+            "variananora",
+            "ProfElements",
+            "Riley",
+            "FluffyBear",
+            "GallowsDove",
+            "Apeiros",
+            "Martin",
+            "Bunnky",
+            "ReasonFoundDecoy",
+            "Oah",
+            "Azak",
+            "andrewandy",
+            "EpicPlayer10",
+            "GentlemanCheesy",
+            "ybw0014",
+            "Ashian",
+            "R.I.P",
+            "OOOOMAGAAA",
+            "TerslenK",
+            "FN_FAL",
+            "supertechxter"
+    );
 
     @Nonnull
     public static String toTitleCase(@Nonnull String string) {
@@ -42,41 +76,6 @@ public final class StringUtils {
         }
         return built;
     }
-
-    /**
-     * List of names to be given to ArmourStands, invisible but mods and Minimaps can see them :)
-     */
-    @Nonnull
-    private static final List<String> EGG_NAMES = Arrays.asList(
-        "TheBusyBiscuit",
-        "Alessio",
-        "Walshy",
-        "Jeff",
-        "Seggan",
-        "BOOMER_1",
-        "svr333",
-        "variananora",
-        "ProfElements",
-        "Riley",
-        "FluffyBear",
-        "GallowsDove",
-        "Apeiros",
-        "Martin",
-        "Bunnky",
-        "ReasonFoundDecoy",
-        "Oah",
-        "Azak",
-        "andrewandy",
-        "EpicPlayer10",
-        "GentlemanCheesy",
-        "ybw0014",
-        "Ashian",
-        "R.I.P",
-        "OOOOMAGAAA",
-        "TerslenK",
-        "FN_FAL",
-        "supertechxter"
-    );
 
     @Nonnull
     public static String getRandomEggName() {

@@ -1,12 +1,15 @@
 package io.github.sefiraat.networks.slimefun.network;
 
+import com.balugaq.netex.api.enums.FeedbackType;
+import com.balugaq.netex.api.helpers.Icon;
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.ytdd9527.networksexpansion.utils.itemstacks.ItemStackUtil;
 import io.github.sefiraat.networks.NetworkStorage;
+import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.sefiraat.networks.network.NodeType;
 import io.github.sefiraat.networks.slimefun.NetworkSlimefunItems;
-import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -25,52 +28,57 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 
+@SuppressWarnings("deprecation")
 public class NetworkPowerDisplay extends NetworkObject {
 
     private static final int[] BACKGROUND_SLOTS = new int[]{
-        0, 1, 2, 3, 5, 6, 7, 8
+            0, 1, 2, 3, 5, 6, 7, 8
     };
     private static final int DISPLAY_SLOT = 4;
-
-    private static final CustomItemStack EMPTY = new CustomItemStack(
-        Material.RED_STAINED_GLASS_PANE,
-        Theme.CLICK_INFO + "状态",
-        Theme.PASSIVE + "未连接"
-    );
 
     public NetworkPowerDisplay(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe, NodeType.POWER_DISPLAY);
         addItemHandler(
-            new BlockTicker() {
-                @Override
-                public boolean isSynchronized() {
-                    return false;
-                }
+                new BlockTicker() {
+                    @Override
+                    public boolean isSynchronized() {
+                        return false;
+                    }
 
-                @Override
-                public void tick(Block block, SlimefunItem slimefunItem, SlimefunBlockData data) {
-                    BlockMenu blockMenu = data.getBlockMenu();
-                    if (blockMenu != null) {
-                        addToRegistry(block);
-                        setDisplay(blockMenu);
+                    @Override
+                    public void tick(Block block, SlimefunItem slimefunItem, SlimefunBlockData data) {
+                        BlockMenu blockMenu = data.getBlockMenu();
+                        if (blockMenu != null) {
+                            addToRegistry(block);
+                            setDisplay(blockMenu);
+                        }
                     }
                 }
-            }
         );
+    }
+
+    private static ItemStack getChargeStack(long charge) {
+        return ItemStackUtil.getCleanItem(new CustomItemStack(
+                Material.GREEN_STAINED_GLASS_PANE,
+                Networks.getLocalizationService().getString("icons.power_display.status_title"),
+                String.format(Networks.getLocalizationService().getString("icons.power_display.charge"), String.valueOf(charge))
+        ));
     }
 
     private void setDisplay(BlockMenu blockMenu) {
         if (blockMenu.hasViewer()) {
-            final NodeDefinition definition = NetworkStorage.getAllNetworkObjects().get(blockMenu.getLocation());
+            final NodeDefinition definition = NetworkStorage.getNode(blockMenu.getLocation());
 
             if (definition.getNode() == null) {
-                blockMenu.replaceExistingItem(DISPLAY_SLOT, EMPTY);
+                blockMenu.replaceExistingItem(DISPLAY_SLOT, Icon.POWER_DISPLAY_EMPTY);
+                sendFeedback(blockMenu.getLocation(), FeedbackType.NO_NETWORK_FOUND);
                 return;
             }
 
             final NetworkRoot root = definition.getNode().getRoot();
             final long networkCharge = root.getRootPower();
             blockMenu.replaceExistingItem(DISPLAY_SLOT, getChargeStack(networkCharge));
+            sendFeedback(blockMenu.getLocation(), FeedbackType.WORKING);
         }
     }
 
@@ -86,8 +94,8 @@ public class NetworkPowerDisplay extends NetworkObject {
 
             @Override
             public boolean canOpen(@Nonnull Block block, @Nonnull Player player) {
-                return NetworkSlimefunItems.NETWORK_POWER_DISPLAY.canUse(player, false)
-                    && Slimefun.getProtectionManager().hasPermission(player, block.getLocation(), Interaction.INTERACT_BLOCK);
+                return player.hasPermission("slimefun.inventory.bypass") || (NetworkSlimefunItems.NETWORK_POWER_DISPLAY.canUse(player, false)
+                        && Slimefun.getProtectionManager().hasPermission(player, block.getLocation(), Interaction.INTERACT_BLOCK));
             }
 
             @Override
@@ -95,13 +103,5 @@ public class NetworkPowerDisplay extends NetworkObject {
                 return new int[0];
             }
         };
-    }
-
-    private static CustomItemStack getChargeStack(long charge) {
-        return new CustomItemStack(
-            Material.GREEN_STAINED_GLASS_PANE,
-            Theme.CLICK_INFO + "状态",
-            Theme.PASSIVE + "网络电力: " + charge + "J"
-        );
     }
 }

@@ -1,9 +1,11 @@
 package io.github.sefiraat.networks.slimefun.network;
 
+import com.balugaq.netex.api.enums.FeedbackType;
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import dev.sefiraat.sefilib.misc.ParticleUtils;
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.Networks;
+import io.github.sefiraat.networks.managers.SupportedPluginManager;
 import io.github.sefiraat.networks.network.NodeDefinition;
 import io.github.sefiraat.networks.network.NodeType;
 import io.github.sefiraat.networks.slimefun.NetworkSlimefunItems;
@@ -35,6 +37,7 @@ import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Optional;
 
+@SuppressWarnings("deprecation")
 public class NetworkVacuum extends NetworkObject {
 
     private static final int[] INPUT_SLOTS = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
@@ -54,30 +57,30 @@ public class NetworkVacuum extends NetworkObject {
         }
 
         addItemHandler(
-            new BlockTicker() {
+                new BlockTicker() {
 
-                private int tick = 1;
+                    private int tick = 1;
 
-                @Override
-                public boolean isSynchronized() {
-                    return false;
-                }
+                    @Override
+                    public boolean isSynchronized() {
+                        return false;
+                    }
 
-                @Override
-                public void tick(Block block, SlimefunItem item, SlimefunBlockData data) {
-                    if (tick <= 1) {
-                        final BlockMenu blockMenu = data.getBlockMenu();
-                        addToRegistry(block);
-                        tryAddItem(blockMenu);
-                        Bukkit.getScheduler().runTask(Networks.getInstance(), bukkitTask -> findItem(blockMenu));
+                    @Override
+                    public void tick(Block block, SlimefunItem item, SlimefunBlockData data) {
+                        if (tick <= 1) {
+                            final BlockMenu blockMenu = data.getBlockMenu();
+                            addToRegistry(block);
+                            tryAddItem(blockMenu);
+                            Bukkit.getScheduler().runTask(Networks.getInstance(), bukkitTask -> findItem(blockMenu));
+                        }
+                    }
+
+                    @Override
+                    public void uniqueTick() {
+                        tick = tick <= 1 ? tickRate.getValue() : tick - 1;
                     }
                 }
-
-                @Override
-                public void uniqueTick() {
-                    tick = tick <= 1 ? tickRate.getValue() : tick - 1;
-                }
-            }
         );
     }
 
@@ -86,17 +89,26 @@ public class NetworkVacuum extends NetworkObject {
 	private void findItem(@Nonnull BlockMenu blockMenu) {
         for (int inputSlot : INPUT_SLOTS) {
             final ItemStack inSlot = blockMenu.getItemInSlot(inputSlot);
-            if (inSlot == null || inSlot.getType().isAir()) {
+            if (inSlot == null || inSlot.getType() == Material.AIR) {
                 final Location location = blockMenu.getLocation().clone().add(0.5, 0.5, 0.5);
                 final int range = this.vacuumRange.getValue();
                 Collection<Entity> items = location.getWorld()
-                    .getNearbyEntities(location, range, range, range, Item.class::isInstance);
+                        .getNearbyEntities(location, range, range, range, Item.class::isInstance);
                 Optional<Entity> optionalEntity = items.stream().findFirst();
                 if (optionalEntity.isEmpty() || !(optionalEntity.get() instanceof Item item)) {
+                    sendFeedback(blockMenu.getLocation(), FeedbackType.NO_ITEM_FOUND);
                     return;
                 }
                 if (item.getPickupDelay() <= 0 && !SlimefunUtils.hasNoPickupFlag(item)) {
-                    final ItemStack itemStack = item.getItemStack();
+                    final ItemStack itemStack = item.getItemStack().clone();
+                    final int amount = SupportedPluginManager.getStackAmount(item);
+                    if (amount > itemStack.getMaxStackSize()) {
+                        SupportedPluginManager.setStackAmount(item, amount - itemStack.getMaxStackSize());
+                        itemStack.setAmount(itemStack.getMaxStackSize());
+                    } else {
+                        itemStack.setAmount(amount);
+                        item.remove();
+                    }
                     blockMenu.replaceExistingItem(inputSlot, itemStack);
                     ParticleUtils.displayParticleRandomly(item, 1, 5, new Particle.DustOptions(Color.BLUE, 1));
                     item.remove();
@@ -104,12 +116,14 @@ public class NetworkVacuum extends NetworkObject {
                 return;
             }
         }
+        sendFeedback(blockMenu.getLocation(), FeedbackType.WORKING);
     }
 
     private void tryAddItem(@Nonnull BlockMenu blockMenu) {
-        final NodeDefinition definition = NetworkStorage.getAllNetworkObjects().get(blockMenu.getLocation());
+        final NodeDefinition definition = NetworkStorage.getNode(blockMenu.getLocation());
 
         if (definition.getNode() == null) {
+            sendFeedback(blockMenu.getLocation(), FeedbackType.NO_NETWORK_FOUND);
             return;
         }
 
@@ -121,6 +135,7 @@ public class NetworkVacuum extends NetworkObject {
             }
             definition.getNode().getRoot().addItemStack(itemStack);
         }
+        sendFeedback(blockMenu.getLocation(), FeedbackType.WORKING);
     }
 
     @Override
@@ -134,9 +149,9 @@ public class NetworkVacuum extends NetworkObject {
 
             @Override
             public boolean canOpen(@Nonnull Block block, @Nonnull Player player) {
-                return NetworkSlimefunItems.NETWORK_VACUUM.canUse(player, false)
-                    && Slimefun.getProtectionManager()
-                    .hasPermission(player, block.getLocation(), Interaction.INTERACT_BLOCK);
+                return player.hasPermission("slimefun.inventory.bypass") || (NetworkSlimefunItems.NETWORK_VACUUM.canUse(player, false)
+                        && Slimefun.getProtectionManager()
+                        .hasPermission(player, block.getLocation(), Interaction.INTERACT_BLOCK));
             }
 
             @Override

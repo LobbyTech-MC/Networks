@@ -1,11 +1,12 @@
 package io.github.sefiraat.networks.utils;
 
-import lombok.experimental.UtilityClass;
-
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import javax.annotation.Nonnull;
+
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class StringUtils {

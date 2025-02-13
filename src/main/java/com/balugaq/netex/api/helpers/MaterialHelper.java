@@ -1,11 +1,13 @@
 package com.balugaq.netex.api.helpers;
 
-import com.google.common.base.Preconditions;
-import lombok.experimental.UtilityClass;
-import net.guizhanss.guizhanlib.utils.StringUtil;
+import javax.annotation.Nonnull;
+
 import org.bukkit.Material;
 
-import javax.annotation.Nonnull;
+import com.google.common.base.Preconditions;
+
+import lombok.experimental.UtilityClass;
+import net.guizhanss.guizhanlib.utils.StringUtil;
 
 @UtilityClass
 public final class MaterialHelper {

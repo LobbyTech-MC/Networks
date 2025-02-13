@@ -1,12 +1,13 @@
 package com.balugaq.netex.api.events;
 
-import com.balugaq.netex.api.enums.StorageType;
-import io.github.sefiraat.networks.network.NetworkRoot;
-import io.github.sefiraat.networks.network.barrel.BarrelType;
-import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+
+import com.balugaq.netex.api.enums.StorageType;
+
+import io.github.sefiraat.networks.network.NetworkRoot;
+import lombok.Getter;
 
 @Getter
 public class NetworkRootLocateStorageEvent extends Event {

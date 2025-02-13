@@ -1,16 +1,18 @@
 package com.ytdd9527.networksexpansion.implementation.machines.encoders;
 
+import java.util.Map;
+import java.util.Set;
+
+import org.bukkit.inventory.ItemStack;
+
 import com.balugaq.netex.api.helpers.SupportedExpansionWorkbenchRecipes;
 import com.ytdd9527.networksexpansion.core.items.machines.AbstractEncoder;
 import com.ytdd9527.networksexpansion.implementation.blueprints.ExpansionWorkbenchBlueprint;
+
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.Map;
-import java.util.Set;
 
 public class ExpansionWorkbenchEncoder extends AbstractEncoder {
 

@@ -1,14 +1,16 @@
 package io.github.sefiraat.networks.network.stackcaches;
 
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
-import io.github.sefiraat.networks.Networks;
-import lombok.Getter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import io.github.sefiraat.networks.Networks;
+import lombok.Getter;
+import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 
 public class QuantumCache extends ItemStackCache {
 

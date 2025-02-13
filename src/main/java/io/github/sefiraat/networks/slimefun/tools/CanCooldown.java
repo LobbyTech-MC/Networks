@@ -1,12 +1,13 @@
 package io.github.sefiraat.networks.slimefun.tools;
 
-import io.github.sefiraat.networks.Networks;
-import io.github.sefiraat.networks.utils.StackUtils;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+import io.github.sefiraat.networks.Networks;
+import io.github.sefiraat.networks.utils.StackUtils;
 
 public interface CanCooldown {
 

@@ -1,23 +1,26 @@
 package com.balugaq.netex.api.interfaces;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import com.balugaq.netex.api.data.RandomMachineRecipe;
 import com.balugaq.netex.api.factories.MachineRecipeFactory;
 import com.balugaq.netex.api.helpers.Icon;
 import com.ytdd9527.networksexpansion.core.items.unusable.ReplaceableCard;
 import com.ytdd9527.networksexpansion.utils.itemstacks.ItemStackUtil;
 import com.ytdd9527.networksexpansion.utils.itemstacks.RecipeUtil;
+
 import io.github.sefiraat.networks.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A {@link SlimefunItem} that will show its working-recipe in {@link SlimefunGuide}.

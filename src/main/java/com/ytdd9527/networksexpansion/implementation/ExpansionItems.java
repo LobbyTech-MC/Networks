@@ -3,7 +3,6 @@ package com.ytdd9527.networksexpansion.implementation;
 import com.balugaq.netex.api.enums.StorageUnitType;
 import com.ytdd9527.networksexpansion.core.items.SpecialSlimefunItem;
 import com.ytdd9527.networksexpansion.core.items.unusable.AuthorHead;
-import com.ytdd9527.networksexpansion.core.items.unusable.NetworksExpansionGuide;
 import com.ytdd9527.networksexpansion.core.items.unusable.UnusableSlimefunItem;
 import com.ytdd9527.networksexpansion.implementation.blueprints.AncientAltarBlueprint;
 import com.ytdd9527.networksexpansion.implementation.blueprints.ArmorForgeBlueprint;
@@ -97,6 +96,7 @@ import com.ytdd9527.networksexpansion.implementation.tools.ItemMover;
 import com.ytdd9527.networksexpansion.implementation.tools.NetworksExpansionWorldEditAxe;
 import com.ytdd9527.networksexpansion.implementation.tools.NetworksInfoTool;
 import com.ytdd9527.networksexpansion.implementation.tools.StatusViewer;
+
 import io.github.sefiraat.networks.slimefun.network.NetworkBridge;
 import io.github.sefiraat.networks.slimefun.network.NetworkPowerNode;
 import io.github.sefiraat.networks.slimefun.network.NetworkQuantumStorage;

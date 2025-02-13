@@ -1,13 +1,14 @@
 package io.github.sefiraat.networks.utils;
 
+import javax.annotation.Nonnull;
+
+import org.bukkit.NamespacedKey;
+
 import io.github.mooy1.infinityexpansion.InfinityExpansion;
 import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.managers.SupportedPluginManager;
 import lombok.Data;
 import lombok.experimental.UtilityClass;
-import org.bukkit.NamespacedKey;
-
-import javax.annotation.Nonnull;
 
 @Data
 @UtilityClass

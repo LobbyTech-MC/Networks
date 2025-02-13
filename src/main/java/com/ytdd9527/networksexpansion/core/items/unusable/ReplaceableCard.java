@@ -1,18 +1,21 @@
 package com.ytdd9527.networksexpansion.core.items.unusable;
 
+import java.util.EnumMap;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import com.balugaq.netex.api.interfaces.RecipeItem;
 import com.balugaq.netex.api.interfaces.UnCopiableItem;
+
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import lombok.Getter;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.EnumMap;
-import java.util.Map;
 
 /**
  * targetMaterial = this.getItem() + sourceMaterial

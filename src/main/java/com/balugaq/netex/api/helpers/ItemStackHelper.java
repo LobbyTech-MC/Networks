@@ -1,8 +1,7 @@
 package com.balugaq.netex.api.helpers;
 
-import com.balugaq.netex.api.enums.MinecraftVersion;
-import com.google.common.base.Preconditions;
-import io.github.sefiraat.networks.Networks;
+import javax.annotation.Nonnull;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -10,7 +9,10 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
-import javax.annotation.Nonnull;
+import com.balugaq.netex.api.enums.MinecraftVersion;
+import com.google.common.base.Preconditions;
+
+import io.github.sefiraat.networks.Networks;
 
 @SuppressWarnings("deprecation")
 public final class ItemStackHelper {

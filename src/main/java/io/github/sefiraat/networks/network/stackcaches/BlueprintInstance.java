@@ -1,13 +1,14 @@
 package io.github.sefiraat.networks.network.stackcaches;
 
-import lombok.Getter;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import lombok.Getter;
 
 public class BlueprintInstance extends ItemStackCache {
 

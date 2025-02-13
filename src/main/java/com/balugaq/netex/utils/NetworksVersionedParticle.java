@@ -1,13 +1,16 @@
 package com.balugaq.netex.utils;
 
-import com.balugaq.netex.api.enums.MinecraftVersion;
-import io.github.sefiraat.networks.Networks;
-import lombok.experimental.UtilityClass;
-import org.bukkit.Particle;
+import java.lang.reflect.Field;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
+
+import org.bukkit.Particle;
+
+import com.balugaq.netex.api.enums.MinecraftVersion;
+
+import io.github.sefiraat.networks.Networks;
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class NetworksVersionedParticle {

@@ -1,9 +1,9 @@
 package com.balugaq.netex.api.data;
 
 
-import com.ytdd9527.networksexpansion.utils.itemstacks.CompareUtil;
-
 import javax.annotation.Nonnull;
+
+import com.ytdd9527.networksexpansion.utils.itemstacks.CompareUtil;
 
 /**
  * @author Final_ROOT

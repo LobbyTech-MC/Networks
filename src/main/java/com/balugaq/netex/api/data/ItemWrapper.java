@@ -1,15 +1,18 @@
 package com.balugaq.netex.api.data;
 
-import com.ytdd9527.networksexpansion.utils.itemstacks.ItemStackUtil;
-import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import com.ytdd9527.networksexpansion.utils.itemstacks.ItemStackUtil;
+
+import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 
 /**
  * @author Final_ROOT

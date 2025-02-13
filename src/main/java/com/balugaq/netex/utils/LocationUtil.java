@@ -1,9 +1,10 @@
 package com.balugaq.netex.utils;
 
-import lombok.experimental.UtilityClass;
+import javax.annotation.Nonnull;
+
 import org.bukkit.Location;
 
-import javax.annotation.Nonnull;
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class LocationUtil {

@@ -1,8 +1,7 @@
 package io.github.sefiraat.networks.listeners;
 
-import io.github.sefiraat.networks.NetworkStorage;
-import io.github.sefiraat.networks.Networks;
-import io.github.sefiraat.networks.utils.NetworkUtils;
+import java.text.MessageFormat;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -10,7 +9,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
-import java.text.MessageFormat;
+import io.github.sefiraat.networks.NetworkStorage;
+import io.github.sefiraat.networks.Networks;
+import io.github.sefiraat.networks.utils.NetworkUtils;
 
 /*
  * Fix https://github.com/Sefiraat/Networks/issues/188

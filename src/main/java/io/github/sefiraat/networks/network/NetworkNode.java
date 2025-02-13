@@ -1,6 +1,18 @@
 package io.github.sefiraat.networks.network;
 
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.slimefun.network.NetworkController;
@@ -9,15 +21,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import lombok.Getter;
 import lombok.ToString;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import javax.annotation.Nonnull;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
 
 @ToString
 public class NetworkNode {

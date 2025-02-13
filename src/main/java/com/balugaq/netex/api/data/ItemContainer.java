@@ -1,9 +1,10 @@
 package com.balugaq.netex.api.data;
 
+import org.bukkit.inventory.ItemStack;
+
 import io.github.sefiraat.networks.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import lombok.Getter;
-import org.bukkit.inventory.ItemStack;
 
 @Getter
 public class ItemContainer {

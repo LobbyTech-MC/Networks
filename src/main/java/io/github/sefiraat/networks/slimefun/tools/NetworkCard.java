@@ -1,5 +1,13 @@
 package io.github.sefiraat.networks.slimefun.tools;
 
+import javax.annotation.Nonnull;
+
+import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
 import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.network.stackcaches.CardInstance;
 import io.github.sefiraat.networks.utils.Keys;
@@ -11,13 +19,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.DistinctiveItem;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
-import org.bukkit.Material;
-import org.bukkit.Tag;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import javax.annotation.Nonnull;
 
 @Deprecated
 public class NetworkCard extends SlimefunItem implements DistinctiveItem {

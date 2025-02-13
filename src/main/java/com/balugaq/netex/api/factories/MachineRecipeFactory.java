@@ -1,17 +1,19 @@
 package com.balugaq.netex.api.factories;
 
 
-import com.balugaq.netex.api.data.AdvancedMachineRecipe;
-import com.balugaq.netex.api.data.ItemAmountWrapper;
-import com.balugaq.netex.api.data.RandomMachineRecipe;
-import com.ytdd9527.networksexpansion.utils.itemstacks.ItemStackUtil;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
+
+import com.balugaq.netex.api.data.AdvancedMachineRecipe;
+import com.balugaq.netex.api.data.ItemAmountWrapper;
+import com.balugaq.netex.api.data.RandomMachineRecipe;
+import com.ytdd9527.networksexpansion.utils.itemstacks.ItemStackUtil;
+
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 
 /**
  * @author Final_ROOT

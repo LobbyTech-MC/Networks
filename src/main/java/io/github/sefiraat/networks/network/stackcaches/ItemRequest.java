@@ -1,9 +1,10 @@
 package io.github.sefiraat.networks.network.stackcaches;
 
-import lombok.Getter;
+import javax.annotation.Nonnull;
+
 import org.bukkit.inventory.ItemStack;
 
-import javax.annotation.Nonnull;
+import lombok.Getter;
 
 @Getter
 public class ItemRequest extends ItemStackCache {

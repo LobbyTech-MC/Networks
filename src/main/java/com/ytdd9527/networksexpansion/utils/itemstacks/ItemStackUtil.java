@@ -1,12 +1,17 @@
 package com.ytdd9527.networksexpansion.utils.itemstacks;
 
-import com.balugaq.netex.api.data.ItemAmountWrapper;
-import com.balugaq.netex.api.data.ItemWrapper;
-import com.balugaq.netex.utils.NetworksVersionedEnchantment;
-import io.github.sefiraat.networks.utils.StackUtils;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.nms.ItemNameAdapter;
-import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -21,16 +26,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import com.balugaq.netex.api.data.ItemAmountWrapper;
+import com.balugaq.netex.api.data.ItemWrapper;
+import com.balugaq.netex.utils.NetworksVersionedEnchantment;
+
+import io.github.sefiraat.networks.utils.StackUtils;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.nms.ItemNameAdapter;
+import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 
 /**
  * @author Final_ROOT

@@ -1,8 +1,15 @@
 package com.ytdd9527.networksexpansion.implementation;
 
+import javax.annotation.Nonnull;
+
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
+
 import com.balugaq.netex.api.groups.MainItemGroup;
 import com.balugaq.netex.api.groups.SubFlexItemGroup;
 import com.ytdd9527.networksexpansion.utils.GroupConfigUtil;
+
 import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.utils.Keys;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
@@ -10,11 +17,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.groups.SubItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Player;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author Final_ROOT

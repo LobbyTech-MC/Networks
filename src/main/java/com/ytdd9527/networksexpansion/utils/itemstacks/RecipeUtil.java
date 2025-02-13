@@ -1,9 +1,25 @@
 package com.ytdd9527.networksexpansion.utils.itemstacks;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import com.balugaq.netex.api.data.RandomMachineRecipe;
 import com.balugaq.netex.api.interfaces.RecipeItem;
 import com.ytdd9527.networksexpansion.core.items.unusable.ReplaceableCard;
 import com.ytdd9527.networksexpansion.utils.ReflectionUtil;
+
 import io.github.sefiraat.networks.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
@@ -17,19 +33,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.tools.NetherGoldP
 import io.github.thebusybiscuit.slimefun4.implementation.settings.GoldPanDrop;
 import lombok.experimental.UtilityClass;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Final_ROOT

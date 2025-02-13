@@ -1,11 +1,57 @@
 package com.ytdd9527.networksexpansion.implementation;
 
-import io.github.sefiraat.networks.slimefun.NetworksSlimefunItemStacks;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.ADVANCED_NANOBOTS;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.AI_CORE;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.CRAFTING_BLUEPRINT;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.EMPOWERED_AI_CORE;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.INTERDIMENSIONAL_PRESENCE;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_AUTO_CRAFTER;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_AUTO_CRAFTER_WITHHOLDING;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_BEST_PUSHER;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_BRIDGE;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_CAPACITOR_1;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_CAPACITOR_4;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_CONFIGURATOR;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_CRAFTING_GRID;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_EXPORT;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_GRABBER;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_GREEDY_BLOCK;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_GRID;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_IMPORT;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_MONITOR;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_MORE_PUSHER;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_POWER_OUTLET_1;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_PURGER;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_PUSHER;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_QUANTUM_STORAGE_0;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_QUANTUM_STORAGE_1;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_QUANTUM_STORAGE_10;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_QUANTUM_STORAGE_2;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_QUANTUM_STORAGE_3;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_QUANTUM_STORAGE_4;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_QUANTUM_STORAGE_5;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_QUANTUM_STORAGE_6;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_QUANTUM_STORAGE_7;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_QUANTUM_STORAGE_8;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_QUANTUM_STORAGE_9;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_QUANTUM_WORKBENCH;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_RECIPE_ENCODER;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_VANILLA_GRABBER;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_VANILLA_PUSHER;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.NETWORK_WIRELESS_CONFIGURATOR;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.OPTIC_CABLE;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.OPTIC_GLASS;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.OPTIC_STAR;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.RADIOACTIVE_OPTIC_STAR;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.SHRINKING_BASE;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.SIMPLE_NANOBOTS;
+import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.SYNTHETIC_EMERALD_SHARD;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import static io.github.sefiraat.networks.slimefun.NetworkSlimefunItems.*;
+import io.github.sefiraat.networks.slimefun.NetworksSlimefunItemStacks;
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 
 public class ExpansionRecipes {
     public static final ItemStack hopper = new ItemStack(Material.HOPPER);

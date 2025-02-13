@@ -1,10 +1,10 @@
 package com.ytdd9527.networksexpansion.utils;
 
-import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
-import lombok.experimental.UtilityClass;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
+import lombok.experimental.UtilityClass;
 
 
 /**

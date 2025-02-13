@@ -1,10 +1,11 @@
 package com.ytdd9527.networksexpansion.utils.databases;
 
-import io.github.sefiraat.networks.Networks;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
+
+import org.bukkit.scheduler.BukkitRunnable;
+
+import io.github.sefiraat.networks.Networks;
 
 public class QueryQueue {
 

@@ -1,8 +1,9 @@
 package io.github.sefiraat.networks.network;
 
-import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
 
 public class GridItemRequest extends ItemRequest {
 

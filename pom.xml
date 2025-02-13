@@ -47,6 +47,8 @@
     </pluginRepositories>
 
     <properties>
+        <FluffyMachines-systemPath>C:\Users\11877\Documents\GitHub\Networks/lib/FluffyMachines.jar</FluffyMachines-systemPath>
+        <SlimeAE-systemPath>C:\Users\11877\Documents\GitHub\Networks/lib/SlimeAE.jar</SlimeAE-systemPath>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -287,7 +289,14 @@
             <artifactId>FluffyMachines</artifactId>
             <version>035fe56381</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/FluffyMachines.jar</systemPath>
+            <systemPath>${FluffyMachines-systemPath}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>me.ddggdd135.slimeae</groupId>
+            <artifactId>SlimeAE</artifactId>
+            <version>62a3d00-Beta</version>
+            <scope>system</scope>
+            <systemPath>${SlimeAE-systemPath}</systemPath>
         </dependency>
     </dependencies>
 </project>

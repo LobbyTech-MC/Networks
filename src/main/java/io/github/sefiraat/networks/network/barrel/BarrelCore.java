@@ -1,10 +1,11 @@
 package io.github.sefiraat.networks.network.barrel;
 
-import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
-import org.bukkit.inventory.ItemStack;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.bukkit.inventory.ItemStack;
+
+import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
 
 public interface BarrelCore {
 

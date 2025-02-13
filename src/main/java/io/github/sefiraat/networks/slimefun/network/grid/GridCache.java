@@ -1,11 +1,12 @@
 package io.github.sefiraat.networks.slimefun.network.grid;
 
-import org.bukkit.inventory.ItemStack;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.bukkit.inventory.ItemStack;
 
 public class GridCache {
 

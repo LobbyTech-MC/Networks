@@ -11,17 +11,19 @@ import lombok.Getter;
 public class NetworkRootReadyEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final NetworkRoot root;
+
     public NetworkRootReadyEvent(NetworkRoot root) {
         super(true);
         this.root = root;
     }
-    @NotNull
-    @Override
-    public HandlerList getHandlers() {
+
+    public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public static HandlerList getHandlerList() {
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
         return handlers;
     }
 }

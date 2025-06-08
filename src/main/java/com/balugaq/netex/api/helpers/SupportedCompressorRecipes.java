@@ -8,8 +8,7 @@ import javax.annotation.Nonnull;
 import org.bukkit.inventory.ItemStack;
 
 import com.balugaq.netex.api.interfaces.CanTestRecipe;
-import com.balugaq.netex.api.interfaces.HasRecipes;
-
+import com.balugaq.netex.api.interfaces.RecipesHolder;
 import io.github.sefiraat.networks.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
@@ -20,17 +19,17 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Slimefu
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public final class SupportedCompressorRecipes implements HasRecipes, CanTestRecipe {
+public final class SupportedCompressorRecipes implements RecipesHolder, CanTestRecipe {
 
     private static final Map<ItemStack[], ItemStack> RECIPES = new HashMap<>();
 
     static {
         String id = SlimefunItems.COMPRESSOR.getItemId();
         SlimefunItem recipeTypeItem = SlimefunItem.getById(id);
-        if (recipeTypeItem != null && recipeTypeItem instanceof MultiBlockMachine mb) {
+        if (recipeTypeItem instanceof MultiBlockMachine mb) {
             boolean isInput = true;
             ItemStack[] input = null;
-            ItemStack[] output = null;
+            ItemStack[] output;
             for (ItemStack[] recipe : mb.getRecipes()) {
                 if (isInput) {
                     input = recipe;
@@ -72,7 +71,7 @@ public final class SupportedCompressorRecipes implements HasRecipes, CanTestReci
         }
     }
 
-    public static Map<ItemStack[], ItemStack> getRecipes() {
+    public static @Nonnull Map<ItemStack[], ItemStack> getRecipes() {
         return RECIPES;
     }
 

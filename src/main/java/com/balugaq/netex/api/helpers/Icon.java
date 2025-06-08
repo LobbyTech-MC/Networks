@@ -1,8 +1,6 @@
 package com.balugaq.netex.api.helpers;
 
 
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import com.ytdd9527.networksexpansion.utils.itemstacks.ItemStackUtil;
 
@@ -10,6 +8,13 @@ import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.utils.Theme;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Optional;
 
 
 /**
@@ -25,19 +30,19 @@ public class Icon {
             Material.LAPIS_BLOCK,
             Theme.MACHINE,
             Networks.getLocalizationService().getString("icons.recipe-types.expansion_workbench_6x6.name"),
-            Networks.getLocalizationService().getString("icons.recipe-types.expansion_workbench_6x6.lore")
+            Networks.getLocalizationService().getStringArray("icons.recipe-types.expansion_workbench_6x6.lore")
     );
     public static final ItemStack RECIPE_TYPE_ITEMSTACK_EXPANSION_WORKBENCH_3x3 = Theme.themedItemStack(
             Material.BAMBOO_BLOCK,
             Theme.MACHINE,
             Networks.getLocalizationService().getString("icons.recipe-types.expansion_workbench_3x3.name"),
-            Networks.getLocalizationService().getString("icons.recipe-types.expansion_workbench_3x3.lore")
+            Networks.getLocalizationService().getStringArray("icons.recipe-types.expansion_workbench_3x3.lore")
     );
     public static final ItemStack RECIPE_TYPE_ITEMSTACK_QUANTUM_WORKBENCH = Theme.themedItemStack(
             Material.BRAIN_CORAL_BLOCK,
             Theme.MACHINE,
             Networks.getLocalizationService().getString("icons.recipe-types.quantum_workbench.name"),
-            Networks.getLocalizationService().getString("icons.recipe-types.quantum_workbench.lore")
+            Networks.getLocalizationService().getStringArray("icons.recipe-types.quantum_workbench.lore")
     );
     public static final ItemStack OUTPUT_BACKGROUND_STACK = Networks.getLocalizationService().getIcon(
             "output-background-stack",
@@ -58,6 +63,10 @@ public class Icon {
     public static final ItemStack BLANK_SLOT_STACK = Networks.getLocalizationService().getIcon(
             "blank-slot-stack",
             Material.LIGHT_GRAY_STAINED_GLASS_PANE
+    );
+    public static final ItemStack DARK_BLANK_SLOT_STACK = Networks.getLocalizationService().getIcon(
+            "blank-slot-stack",
+            Material.BLACK_STAINED_GLASS_PANE
     );
     public static final ItemStack PAGE_PREVIOUS_STACK = Networks.getLocalizationService().getIcon(
             "page-previous-stack",
@@ -240,4 +249,62 @@ public class Icon {
             Material.CRAFTING_TABLE
     );
 
+    public static final ItemStack UNKNOWN_ITEM = Networks.getLocalizationService().getIcon(
+            "unknown-item",
+            Material.BARRIER
+    );
+
+    public static final ItemStack ITEM_FLOW_VIEWER_BACK_TO_MAIN = Networks.getLocalizationService().getIcon(
+            "item-flow-viewer-back-to-main",
+            Material.RED_STAINED_GLASS_PANE
+    );
+
+    public static final ItemStack ITEM_FLOW_VIEWER_FORCE_CLEAN = Networks.getLocalizationService().getIcon(
+            "item-flow-viewer-force-clean",
+            Material.YELLOW_STAINED_GLASS_PANE
+    );
+
+    public static final ItemStack JEG_BUTTON = Networks.getLocalizationService().getIcon(
+            "jeg-button",
+            Material.KNOWLEDGE_BOOK
+    );
+
+    public static final ItemStack FILTER_MODE_BLACK_LIST = Networks.getLocalizationService().getIcon(
+            "filter-mode-black-list",
+            Material.BLACK_WOOL
+    );
+
+    public static final ItemStack FILTER_MODE_WHITE_LIST = Networks.getLocalizationService().getIcon(
+            "filter-mode-white-list",
+            Material.WHITE_WOOL
+    );
+
+    public static final ItemStack MATCH_MODE_ALL_MATCH = Networks.getLocalizationService().getIcon(
+            "match-mode-all-match",
+            Material.FILLED_MAP
+    );
+
+    public static final ItemStack MATCH_MODE_MATERIAL_MATCH = Networks.getLocalizationService().getIcon(
+            "match-mode-material-match",
+            Material.MAP
+    );
+
+    public static final ItemStack ADVANCED_VACUUM_SPLIT_BLOCK = Networks.getLocalizationService().getIcon(
+            "advanced-vacuum-split-block",
+            Material.CYAN_STAINED_GLASS_PANE
+    );
+
+    // pages are 1-based
+    @Nonnull
+    public static ItemStack getPageStack(@Nonnull ItemStack origin, int currentPage, int maxPage) {
+        var clone = origin.clone();
+        var meta = clone.getItemMeta();
+        if (meta != null) {
+            var lore = Optional.ofNullable(meta.getLore()).orElse(new ArrayList<>());
+            lore.add(ChatColor.translateAlternateColorCodes('&', "&7页 &a" + currentPage + " / " + maxPage));
+            meta.setLore(lore);
+            clone.setItemMeta(meta);
+        }
+        return clone;
+    }
 }

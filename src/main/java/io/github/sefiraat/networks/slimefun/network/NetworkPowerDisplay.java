@@ -30,7 +30,6 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 
-@SuppressWarnings("deprecation")
 public class NetworkPowerDisplay extends NetworkObject {
 
     private static final int[] BACKGROUND_SLOTS = new int[]{
@@ -63,7 +62,7 @@ public class NetworkPowerDisplay extends NetworkObject {
         return ItemStackUtil.getCleanItem(new CustomItemStack(
                 Material.GREEN_STAINED_GLASS_PANE,
                 Networks.getLocalizationService().getString("icons.power_display.status_title"),
-                String.format(Networks.getLocalizationService().getString("icons.power_display.charge"), String.valueOf(charge))
+                String.format(Networks.getLocalizationService().getString("icons.power_display.charge"), charge)
         ));
     }
 

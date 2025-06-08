@@ -1,12 +1,25 @@
 package com.ytdd9527.networksexpansion.implementation.machines.networks.advanced;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.balugaq.netex.api.enums.TransportFacing;
+import com.balugaq.netex.api.helpers.Icon;
+import com.balugaq.netex.utils.BlockMenuUtil;
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import com.ytdd9527.networksexpansion.core.items.SpecialSlimefunItem;
+import io.github.sefiraat.networks.Networks;
+import io.github.sefiraat.networks.slimefun.network.AdminDebuggable;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
+import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -197,7 +210,7 @@ public class Offsetter extends SpecialSlimefunItem implements AdminDebuggable {
     public void preRegister() {
         addItemHandler(new BlockBreakHandler(false, false) {
             @Override
-            public void onPlayerBreak(BlockBreakEvent blockBreakEvent, ItemStack itemStack, List<ItemStack> list) {
+            public void onPlayerBreak(@Nonnull BlockBreakEvent blockBreakEvent, @Nonnull ItemStack itemStack, @Nonnull List<ItemStack> list) {
                 Location location = blockBreakEvent.getBlock().getLocation();
                 facingMap.remove(location);
                 offsetMap.remove(location);
@@ -265,26 +278,14 @@ public class Offsetter extends SpecialSlimefunItem implements AdminDebuggable {
 
                 Location location = block.getLocation();
                 switch (attachedFace) {
-                    case FLOOR -> {
-                        facingMap.put(location, TransportFacing.DOWN_TO_UP);
-                    }
-                    case CEILING -> {
-                        facingMap.put(location, TransportFacing.UP_TO_DOWN);
-                    }
+                    case FLOOR -> facingMap.put(location, TransportFacing.DOWN_TO_UP);
+                    case CEILING -> facingMap.put(location, TransportFacing.UP_TO_DOWN);
                     case WALL -> {
                         switch (blockFace) {
-                            case WEST -> {
-                                facingMap.put(location, TransportFacing.EAST_TO_WEST);
-                            }
-                            case EAST -> {
-                                facingMap.put(location, TransportFacing.WEST_TO_EAST);
-                            }
-                            case NORTH -> {
-                                facingMap.put(location, TransportFacing.SOUTH_TO_NORTH);
-                            }
-                            case SOUTH -> {
-                                facingMap.put(location, TransportFacing.NORTH_TO_SOUTH);
-                            }
+                            case WEST -> facingMap.put(location, TransportFacing.EAST_TO_WEST);
+                            case EAST -> facingMap.put(location, TransportFacing.WEST_TO_EAST);
+                            case NORTH -> facingMap.put(location, TransportFacing.SOUTH_TO_NORTH);
+                            case SOUTH -> facingMap.put(location, TransportFacing.NORTH_TO_SOUTH);
                         }
                     }
                 }

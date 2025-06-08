@@ -72,6 +72,9 @@ import com.ytdd9527.networksexpansion.implementation.machines.encoders.OreCrushe
 import com.ytdd9527.networksexpansion.implementation.machines.encoders.PressureChamberEncoder;
 import com.ytdd9527.networksexpansion.implementation.machines.encoders.QuantumWorkbenchEncoder;
 import com.ytdd9527.networksexpansion.implementation.machines.encoders.SmelteryEncoder;
+import com.ytdd9527.networksexpansion.implementation.machines.managers.CrafterManager;
+import com.ytdd9527.networksexpansion.implementation.machines.managers.DrawerManager;
+import com.ytdd9527.networksexpansion.implementation.machines.managers.QuantumManager;
 import com.ytdd9527.networksexpansion.implementation.machines.manual.Expansion6x6Workbench;
 import com.ytdd9527.networksexpansion.implementation.machines.manual.ExpansionWorkbench;
 import com.ytdd9527.networksexpansion.implementation.machines.manual.StorageUnitUpgradeTable;
@@ -79,6 +82,7 @@ import com.ytdd9527.networksexpansion.implementation.machines.networks.advanced.
 import com.ytdd9527.networksexpansion.implementation.machines.networks.advanced.AdvancedGreedyBlock;
 import com.ytdd9527.networksexpansion.implementation.machines.networks.advanced.AdvancedImport;
 import com.ytdd9527.networksexpansion.implementation.machines.networks.advanced.AdvancedPurger;
+import com.ytdd9527.networksexpansion.implementation.machines.networks.advanced.AdvancedVacuum;
 import com.ytdd9527.networksexpansion.implementation.machines.networks.advanced.BetterGrabber;
 import com.ytdd9527.networksexpansion.implementation.machines.networks.advanced.DueMachine;
 import com.ytdd9527.networksexpansion.implementation.machines.networks.advanced.NetworkBlueprintDecoder;
@@ -90,6 +94,7 @@ import com.ytdd9527.networksexpansion.implementation.machines.networks.advanced.
 import com.ytdd9527.networksexpansion.implementation.machines.networks.advanced.SmartGrabber;
 import com.ytdd9527.networksexpansion.implementation.machines.networks.advanced.SmartPusher;
 import com.ytdd9527.networksexpansion.implementation.machines.unit.NetworksDrawer;
+import com.ytdd9527.networksexpansion.implementation.machines.viewer.ItemFlowViewer;
 import com.ytdd9527.networksexpansion.implementation.tools.CargoNodeQuickTool;
 import com.ytdd9527.networksexpansion.implementation.tools.DueMachineConfigurator;
 import com.ytdd9527.networksexpansion.implementation.tools.ItemMover;
@@ -935,7 +940,6 @@ public class ExpansionItems {
     );
 
 
-
     public static final TransferGrabber TRANSFER_GRABBER = new TransferGrabber(
             ExpansionItemsMenus.MENU_CARGO_SYSTEM,
             ExpansionItemStacks.TRANSFER_GRABBER,
@@ -1558,5 +1562,47 @@ public class ExpansionItems {
             ExpansionItemStacks.STATUS_VIEWER,
             ExpansionWorkbench.TYPE,
             ExpansionRecipes.STATUS_VIEWER
+    );
+
+    public static final UnusableSlimefunItem DRAWER_TIPS = new UnusableSlimefunItem(
+            ExpansionItemsMenus.MENU_ITEMS,
+            ExpansionItemStacks.DRAWER_TIPS,
+            RecipeType.NULL,
+            ExpansionRecipes.NULL
+    );
+
+    public static final QuantumManager QUANTUM_MANAGER = new QuantumManager(
+            ExpansionItemsMenus.MENU_CARGO_SYSTEM,
+            ExpansionItemStacks.QUANTUM_MANAGER,
+            ExpansionWorkbench.TYPE,
+            ExpansionRecipes.QUANTUM_MANAGER
+    );
+
+    public static final DrawerManager DRAWER_MANAGER = new DrawerManager(
+            ExpansionItemsMenus.MENU_CARGO_SYSTEM,
+            ExpansionItemStacks.DRAWER_MANAGER,
+            ExpansionWorkbench.TYPE,
+            ExpansionRecipes.DRAWER_MANAGER
+    );
+
+    public static final ItemFlowViewer ITEM_FLOW_VIEWER = new ItemFlowViewer(
+            ExpansionItemsMenus.MENU_CARGO_SYSTEM,
+            ExpansionItemStacks.ITEM_FLOW_VIEWER,
+            ExpansionWorkbench.TYPE,
+            ExpansionRecipes.ITEM_FLOW_VIEWER
+    );
+
+    public static final AdvancedVacuum ADVANCED_VACUUM = new AdvancedVacuum(
+            ExpansionItemsMenus.MENU_FUNCTIONAL_MACHINE,
+            ExpansionItemStacks.ADVANCED_VACUUM,
+            ExpansionWorkbench.TYPE,
+            ExpansionRecipes.ADVANCED_VACUUM
+    );
+
+    public static final CrafterManager CRAFTER_MANAGER = new CrafterManager(
+            ExpansionItemsMenus.MENU_CARGO_SYSTEM,
+            ExpansionItemStacks.CRAFTER_MANAGER,
+            ExpansionWorkbench.TYPE,
+            ExpansionRecipes.CRAFTER_MANAGER
     );
 }

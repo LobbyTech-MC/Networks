@@ -1,14 +1,5 @@
 package com.ytdd9527.networksexpansion.core.items.unusable;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-
-import org.bukkit.ChatColor;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
 import io.github.sefiraat.networks.Networks;
 import io.github.sefiraat.networks.network.stackcaches.BlueprintInstance;
 import io.github.sefiraat.networks.utils.Keys;
@@ -20,6 +11,13 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.DistinctiveItem;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import org.bukkit.ChatColor;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractBlueprint extends UnusableSlimefunItem implements DistinctiveItem {
 
@@ -40,7 +38,7 @@ public abstract class AbstractBlueprint extends UnusableSlimefunItem implements 
                 lore.add(Theme.PASSIVE + "- " + Networks.getLocalizationService().getString("messages.blueprint.empty"));
                 continue;
             }
-            lore.add(Theme.PASSIVE + "- " +  ChatColor.stripColor(ItemStackHelper.getDisplayName(item)));
+            lore.add(Theme.PASSIVE + "- " + ChatColor.stripColor(ItemStackHelper.getDisplayName(item)));
         }
 
         lore.add("");

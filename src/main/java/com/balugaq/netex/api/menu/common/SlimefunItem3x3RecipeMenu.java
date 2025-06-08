@@ -43,11 +43,11 @@ public class SlimefunItem3x3RecipeMenu extends ChestMenu {
     private final int NEXT_SLOT = 34;
     private final int[] WORK_CONTENT = new int[]{36, 45, 37, 46, 38, 47, 39, 48, 40, 49, 41, 50, 42, 51, 43, 52, 44, 53};
 
-    private final Player player;
-    private final PlayerProfile playerProfile;
-    private final SlimefunGuideMode slimefunGuideMode;
-    private final SlimefunItem slimefunItem;
-    private final ItemGroup itemGroup;
+    private final @Nonnull Player player;
+    private final @Nonnull PlayerProfile playerProfile;
+    private final @Nonnull SlimefunGuideMode slimefunGuideMode;
+    private final @Nonnull SlimefunItem slimefunItem;
+    private final @Nonnull ItemGroup itemGroup;
 
     public SlimefunItem3x3RecipeMenu(@Nonnull Player player, @Nonnull PlayerProfile playerProfile, @Nonnull SlimefunGuideMode slimefunGuideMode, @Nonnull SlimefunItem slimefunItem, @Nonnull ItemGroup itemGroup) {
         this(player, playerProfile, slimefunGuideMode, slimefunItem, itemGroup, 0);

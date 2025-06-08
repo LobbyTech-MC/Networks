@@ -37,7 +37,6 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 
-@SuppressWarnings("deprecation")
 public class NetworkVanillaGrabber extends NetworkDirectional {
 
     private static final int[] BACKGROUND_SLOTS = new int[]{

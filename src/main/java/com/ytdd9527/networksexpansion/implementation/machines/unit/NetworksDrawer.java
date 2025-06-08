@@ -9,23 +9,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
-
 import com.balugaq.netex.api.data.ItemContainer;
 import com.balugaq.netex.api.data.StorageUnitData;
 import com.balugaq.netex.api.enums.QuickTransferMode;
@@ -33,6 +16,7 @@ import com.balugaq.netex.api.enums.StorageUnitType;
 import com.balugaq.netex.api.helpers.Icon;
 import com.balugaq.netex.api.interfaces.Configurable;
 import com.balugaq.netex.api.interfaces.ModelledItem;
+import com.jeff_media.morepersistentdatatypes.DataType;
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import com.ytdd9527.networksexpansion.core.items.SpecialSlimefunItem;
@@ -61,11 +45,37 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import me.ddggdd135.guguslimefunlib.GuguSlimefunLib;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Contract;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Function;
 
 @SuppressWarnings("unused")
 public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveItem, ModelledItem, Configurable {
@@ -77,7 +87,10 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
     private static final String KEY_UUID = "display-uuid";
     private static final int[] DISPLAY_SLOTS = {10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43, 46, 47, 48, 49, 50, 51, 52};
     private static final int STORAGE_INFO_SLOT = 4;
-    private static final NamespacedKey idKey = new NamespacedKey(Networks.getInstance(), "CONTAINER_ID");
+    private static final NamespacedKey idKey = Keys.newKey("CONTAINER_ID");
+    private static final NamespacedKey lockKey = Keys.newKey("CONTAINER_LOCK");
+    private static final NamespacedKey voidExcessKey = Keys.newKey("CONTAINER_VOID_EXCESS");
+    private static final NamespacedKey serverKey = Keys.newKey("CONTAINER_SERVER");
     private static final int QUANTUM_SLOT = 9;
     private static final int QUICK_TRANSFER_SLOT = 18;
     private static final int ITEM_CHOOSE_SLOT = 27;
@@ -212,7 +225,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
             for (int i = 0; i < DISPLAY_SLOTS.length; i++) {
                 if (i < itemStored.size()) {
                     ItemContainer each = itemStored.get(i);
-                    menu.replaceExistingItem(DISPLAY_SLOTS[i], getDisplayItem(each.getSample(), each.getAmount(), maxEach));
+                    menu.replaceExistingItem(DISPLAY_SLOTS[i], getDisplayItem(each.getSampleDirectly(), each.getAmount(), maxEach));
                 } else {
                     menu.replaceExistingItem(DISPLAY_SLOTS[i], Icon.ERROR_BORDER);
                 }
@@ -222,7 +235,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
 
     public static boolean contains(Location l, ItemStack itemStack) {
         for (ItemContainer each : storages.get(l).getStoredItems()) {
-            if (StackUtils.itemsMatch(each.getSample(), itemStack)) {
+            if (StackUtils.itemsMatch(each.getSampleDirectly(), itemStack)) {
                 return true;
             }
         }
@@ -243,6 +256,34 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
         return id;
     }
 
+    public static boolean getLock(@Nonnull ItemStack item) {
+        // Get meta
+        final ItemMeta meta = item.getItemMeta();
+        Boolean lock = null;
+        // Check if meta has lock
+        if (meta != null && meta.getPersistentDataContainer().has(lockKey, PersistentDataType.BOOLEAN)) {
+            lock = meta.getPersistentDataContainer().get(lockKey, PersistentDataType.BOOLEAN);
+        }
+        if (lock == null) {
+            lock = false;
+        }
+        return lock;
+    }
+
+    public static boolean getVoidExcess(@Nonnull ItemStack item) {
+        // Get meta
+        final ItemMeta meta = item.getItemMeta();
+        Boolean voidExcess = null;
+        // Check if meta has void excess
+        if (meta != null && meta.getPersistentDataContainer().has(voidExcessKey, PersistentDataType.BOOLEAN)) {
+            voidExcess = meta.getPersistentDataContainer().get(voidExcessKey, PersistentDataType.BOOLEAN);
+        }
+        if (voidExcess == null) {
+            voidExcess = false;
+        }
+        return voidExcess;
+    }
+
     public static ItemStack bindId(@Nonnull ItemStack itemSample, int id) {
         final ItemStack item = itemSample.clone();
         final ItemMeta meta = item.getItemMeta();
@@ -253,8 +294,39 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
                 lore = new ArrayList<>();
             }
             lore.add(String.format(Networks.getLocalizationService().getString("messages.completed-operation.drawer.bound_id"), id));
+            if (Networks.getSupportedPluginManager().isGuguSlimefunLib()) {
+                lore.add(String.format(Networks.getLocalizationService().getString("messages.completed-operation.drawer.server-uuid"), GuguSlimefunLib.getServerUUID()));
+            }
             meta.setLore(lore);
             meta.getPersistentDataContainer().set(idKey, PersistentDataType.INTEGER, id);
+            if (Networks.getSupportedPluginManager().isGuguSlimefunLib()) {
+                meta.getPersistentDataContainer().set(serverKey, DataType.UUID, GuguSlimefunLib.getServerUUID());
+            }
+        }
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static ItemStack bindIdNew(@Nonnull ItemStack itemSample, int id, boolean lock, boolean voidExcess) {
+        final ItemStack item = itemSample.clone();
+        final ItemMeta meta = item.getItemMeta();
+        List<String> lore;
+        if (meta != null) {
+            lore = meta.getLore();
+            if (lore == null) {
+                lore = new ArrayList<>();
+            }
+            lore.add(String.format(Networks.getLocalizationService().getString("messages.completed-operation.drawer.bound_id"), id));
+            if (Networks.getSupportedPluginManager().isGuguSlimefunLib()) {
+                lore.add(String.format(Networks.getLocalizationService().getString("messages.completed-operation.drawer.server-uuid"), GuguSlimefunLib.getServerUUID()));
+            }
+            meta.setLore(lore);
+            meta.getPersistentDataContainer().set(idKey, PersistentDataType.INTEGER, id);
+            meta.getPersistentDataContainer().set(lockKey, PersistentDataType.BOOLEAN, lock);
+            meta.getPersistentDataContainer().set(voidExcessKey, PersistentDataType.BOOLEAN, voidExcess);
+            if (Networks.getSupportedPluginManager().isGuguSlimefunLib()) {
+                meta.getPersistentDataContainer().set(serverKey, DataType.UUID, GuguSlimefunLib.getServerUUID());
+            }
         }
         item.setItemMeta(meta);
         return item;
@@ -283,6 +355,15 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
 
     public static boolean isVoidExcess(Location l) {
         return voidExcesses.contains(l);
+    }
+
+    public static boolean isVoidExcess(int containerId) {
+        for (Location l : voidExcesses) {
+            if (getContainerId(l) == containerId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static ItemStack getDisplayItem(ItemStack item, int amount, int max) {
@@ -317,7 +398,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
                 final ItemStack itemOnCursor = player.getItemOnCursor();
                 if (StackUtils.itemsMatch(clickItem, Icon.ERROR_BORDER)) {
                     if (itemOnCursor.getType() != Material.AIR) {
-                        data.depositItemStack(itemOnCursor, false, true);
+                        data.depositItemStack0(l, itemOnCursor, false, true);
                     }
                 } else {
                     List<Integer> a = new ArrayList<>();
@@ -325,7 +406,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
                         a.add(i);
                     }
                     int index = a.indexOf(slot);
-                    final ItemStack take = storages.get(l).getStoredItems().get(index).getSample();
+                    final ItemStack take = storages.get(l).getStoredItems().get(index).getSampleDirectly();
 
                     final ItemRequest itemRequest = new ItemRequest(take, 1);
 
@@ -336,20 +417,20 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
                             itemRequest.setAmount(take.getMaxStackSize() * 36);
                         }
 
-                        final ItemStack requestedItemStack = data.requestItem(itemRequest);
+                        final ItemStack requestedItemStack = data.requestItem0(l, itemRequest, false);
                         if (requestedItemStack != null) {
                             do {
                                 int max = Math.min(requestedItemStack.getAmount(), requestedItemStack.getMaxStackSize());
                                 final ItemStack clone = StackUtils.getAsQuantity(requestedItemStack, max);
                                 requestedItemStack.setAmount(requestedItemStack.getAmount() - max);
                                 final HashMap<Integer, ItemStack> remnant = player.getInventory().addItem(clone);
-                                remnant.values().stream().findFirst().ifPresent(leftOver -> data.depositItemStack(leftOver, false));
+                                remnant.values().stream().findFirst().ifPresent(leftOver -> data.depositItemStack0(l, leftOver, false));
                             } while (requestedItemStack.getAmount() > 0);
                         }
                     } else {
                         for (ItemStack each : player.getInventory().getStorageContents()) {
                             if (StackUtils.itemsMatch(each, take)) {
-                                data.depositItemStack(each, true);
+                                data.depositItemStack0(l, each, true);
                             }
                         }
                     }
@@ -427,7 +508,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
 
         if (isQuantum) {
             for (ItemContainer each : thisStorage.getStoredItems()) {
-                final ItemStack sample = each.getSample();
+                final ItemStack sample = each.getSampleDirectly();
                 if (StackUtils.itemsMatch(sample, toTransfer)) {
                     final ItemMeta meta = itemStack.getItemMeta();
                     QuantumCache quantumCache = DataTypeMethods.getCustom(
@@ -480,7 +561,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
                             }
                             final ItemStack clone = quantumCache.getItemStack().clone();
                             clone.setAmount(canAdd);
-                            thisStorage.depositItemStack(clone, true);
+                            thisStorage.depositItemStack0(location, clone, true);
                             player.sendMessage(Networks.getLocalizationService().getString("messages.completed-operation.drawer.deposited_item"));
                             return;
                         }
@@ -503,7 +584,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
                                 }
                                 final ItemStack clone = sample.clone();
 
-                                thisStorage.requestItem(new ItemRequest(clone, canAdd));
+                                thisStorage.requestItem0(location, new ItemRequest(clone, canAdd), false);
                                 storages.put(location, thisStorage);
 
                                 quantumCache = new QuantumCache(clone, canAdd, quantumLimit, false, false);
@@ -524,7 +605,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
                                 }
                                 final ItemStack clone = sample.clone();
 
-                                thisStorage.requestItem(new ItemRequest(clone, canAdd));
+                                thisStorage.requestItem0(location, new ItemRequest(clone, canAdd));
                                 storages.put(location, thisStorage);
 
                                 quantumCache = new QuantumCache(clone, quantumAmount + canAdd, quantumLimit, false, false);
@@ -561,7 +642,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
             }
 
             for (ItemContainer each : thisStorage.getStoredItems()) {
-                final ItemStack sample = each.getSample();
+                final ItemStack sample = each.getSampleDirectly();
                 if (StackUtils.itemsMatch(sample, toTransfer)) {
                     switch (mode) {
                         case FROM_QUANTUM -> {
@@ -571,7 +652,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
                             }
                             int before = stored.getAmount();
                             String name = ItemStackHelper.getDisplayName(stored);
-                            thisStorage.depositItemStack(stored, true);
+                            thisStorage.depositItemStack0(location, stored, true);
                             int left = stored.getAmount();
                             ItemMover.setStoredAmount(itemStack, left);
                             player.sendMessage(String.format(Networks.getLocalizationService().getString("messages.completed-operation.drawer.transferred_to_drawer"), name, before - left));
@@ -579,13 +660,13 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
                         case TO_QUANTUM -> {
                             ItemRequest itemRequest = new ItemRequest(sample, each.getAmount());
                             int before = each.getAmount();
-                            ItemStack fetched = thisStorage.requestItem(itemRequest);
+                            ItemStack fetched = thisStorage.requestItem0(location, itemRequest, false);
                             if (fetched != null) {
                                 String name = ItemStackHelper.getDisplayName(fetched);
                                 ItemMover.depositItem(itemStack, fetched);
                                 int left = fetched.getAmount();
                                 if (fetched.getAmount() > 0) {
-                                    thisStorage.depositItemStack(fetched, false);
+                                    thisStorage.depositItemStack0(location, fetched, false);
                                 }
                                 player.sendMessage(String.format(Networks.getLocalizationService().getString("messages.completed-operation.drawer.transferred_to_item_mover"), name, before - left));
                             }
@@ -598,7 +679,6 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
             player.sendMessage(String.format(Networks.getLocalizationService().getString("messages.unsupported-operation.drawer.not_found_chosen_item"), ItemStackHelper.getDisplayName(toTransfer)));
         } else {
             player.sendMessage(Networks.getLocalizationService().getString("messages.unsupported-operation.drawer.invalid_container"));
-            return;
         }
     }
 
@@ -608,8 +688,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
     }
 
     private static ItemStack getQuickTransferItem(QuickTransferMode mode) {
-        List<String> lore = new ArrayList<>();
-        lore.addAll(Networks.getLocalizationService().getStringList("icons.drawer.quick_transfer.lore_before_status"));
+        List<String> lore = new ArrayList<>(Networks.getLocalizationService().getStringList("icons.drawer.quick_transfer.lore_before_status"));
         lore.add(String.format(Networks.getLocalizationService().getString("icons.drawer.quick_transfer.status"), mode == QuickTransferMode.FROM_QUANTUM ? Networks.getLocalizationService().getString("icons.drawer.quick_transfer.from_quantum") : Networks.getLocalizationService().getString("icons.drawer.quick_transfer.to_quantum")));
         lore.addAll(Networks.getLocalizationService().getStringList("icons.drawer.quick_transfer.lore_after_status"));
         CustomItemStack cis = new CustomItemStack(mode == QuickTransferMode.FROM_QUANTUM ? Material.GREEN_CONCRETE_POWDER : Material.BLUE_CONCRETE_POWDER,
@@ -618,6 +697,20 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
         );
 
         return ItemStackUtil.getCleanItem(cis);
+    }
+
+    @Contract("null -> null")
+    public static UUID getServerUUID(@Nullable ItemStack itemStack) {
+        if (itemStack == null) {
+            return null;
+        }
+
+        var meta = itemStack.getItemMeta();
+        if (meta == null) {
+            return null;
+        }
+
+        return meta.getPersistentDataContainer().get(serverKey, DataType.UUID);
     }
 
     public void loadConfigurations() {
@@ -654,7 +747,6 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
 
     }
 
-
     public void onPlace(@Nonnull BlockPlaceEvent e) {
         Location l = e.getBlock().getLocation();
         ItemStack itemInHand = e.getItemInHand();
@@ -664,6 +756,19 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
         }
         boolean a = false;
         boolean b = false;
+        var suuid = getServerUUID(itemInHand);
+        if (Networks.getSupportedPluginManager().isGuguSlimefunLib()) {
+            if (suuid != null && !p.isOp() && !suuid.equals(GuguSlimefunLib.getServerUUID())) {
+                p.sendMessage(String.format(Networks.getLocalizationService().getString("messages.unsupported-operation.drawer.wrong_server"), suuid, GuguSlimefunLib.getServerUUID()));
+                e.setCancelled(true);
+                if (useSpecialModel) {
+                    removeDisplay(l);
+                }
+                Slimefun.getDatabaseManager().getBlockDataController().removeBlock(l);
+                return;
+            }
+        }
+
         int id = getBoundId(itemInHand);
         if (id != -1) {
             StorageUnitData data = DataStorage.getCachedStorageData(id).orElse(null);
@@ -684,7 +789,13 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
             if (data != null) {
                 lastLoc = data.getLastLocation();
                 a = locked.contains(lastLoc);
+                if (!a) {
+                    a = getLock(itemInHand);
+                }
                 b = voidExcesses.contains(lastLoc);
+                if (!b) {
+                    b = getVoidExcess(itemInHand);
+                }
                 if (a) {
                     locked.remove(lastLoc);
                 }
@@ -739,13 +850,14 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
         // Drop custom item if data exists
         if (data != null) {
             data.setPlaced(false);
-            b.getWorld().dropItemNaturally(l, bindId(getItem(), data.getId()));
+            int id = data.getId();
+            b.getWorld().dropItemNaturally(l, bindIdNew(getItem(), id, isLocked(id), isVoidExcess(id)));
         } else {
             // Data not loaded, just drop with the stored one.
             int id = getContainerId(l);
             if (id != -1) {
                 DataStorage.setContainerStatus(id, false);
-                b.getWorld().dropItemNaturally(l, bindId(getItem(), id));
+                b.getWorld().dropItemNaturally(l, bindIdNew(getItem(), id, isLocked(id), isVoidExcess(id)));
             }
         }
         Slimefun.getDatabaseManager().getBlockDataController().removeBlock(l);
@@ -820,8 +932,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
     }
 
     private ItemStack getLocationErrorItem(int id, Location lastLoc) {
-        List<String> lore = new ArrayList<>();
-        lore.addAll(Networks.getLocalizationService().getStringList("icons.drawer.location_error.lore_before_info"));
+        List<String> lore = new ArrayList<>(Networks.getLocalizationService().getStringList("icons.drawer.location_error.lore_before_info"));
         lore.add(String.format(Networks.getLocalizationService().getString("icons.drawer.location_error.id"), id));
         lore.add(lastLoc == null ? Networks.getLocalizationService().getString("icons.drawer.location_error.unknown") : String.format(Networks.getLocalizationService().getString("icons.drawer.location_error.world"), lastLoc.getWorld().getName()));
         lore.add(lastLoc == null ? Networks.getLocalizationService().getString("icons.drawer.location_error.unknown") : String.format(Networks.getLocalizationService().getString("icons.drawer.location_error.location"), lastLoc.getBlockX(), lastLoc.getBlockY(), lastLoc.getBlockZ()));
@@ -856,8 +967,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
     }
 
     private ItemStack getContentLockItem(boolean locked) {
-        List<String> lore = new ArrayList<>();
-        lore.addAll(Networks.getLocalizationService().getStringList("icons.drawer.content_lock.lore_before_status"));
+        List<String> lore = new ArrayList<>(Networks.getLocalizationService().getStringList("icons.drawer.content_lock.lore_before_status"));
         lore.add(String.format(Networks.getLocalizationService().getString("icons.drawer.content_lock.status"), locked ? Networks.getLocalizationService().getString("icons.drawer.content_lock.locked") : Networks.getLocalizationService().getString("icons.drawer.content_lock.unlocked")));
         lore.addAll(Networks.getLocalizationService().getStringList("icons.drawer.content_lock.lore_after_status"));
         lore.add(locked ? Networks.getLocalizationService().getString("icons.drawer.click_to_disable") : Networks.getLocalizationService().getString("icons.drawer.click_to_enable"));
@@ -869,8 +979,7 @@ public class NetworksDrawer extends SpecialSlimefunItem implements DistinctiveIt
     }
 
     private ItemStack getVoidExcessItem(boolean voidExcess) {
-        List<String> lore = new ArrayList<>();
-        lore.addAll(Networks.getLocalizationService().getStringList("icons.drawer.void_excess.lore_before_status"));
+        List<String> lore = new ArrayList<>(Networks.getLocalizationService().getStringList("icons.drawer.void_excess.lore_before_status"));
         lore.add(String.format(Networks.getLocalizationService().getString("icons.drawer.void_excess.status"), voidExcess ? Networks.getLocalizationService().getString("icons.drawer.void_excess.enabled") : Networks.getLocalizationService().getString("icons.drawer.void_excess.disabled")));
         lore.addAll(Networks.getLocalizationService().getStringList("icons.drawer.void_excess.lore_after_status"));
         lore.add(voidExcess ? Networks.getLocalizationService().getString("icons.drawer.click_to_disable") : Networks.getLocalizationService().getString("icons.drawer.click_to_enable"));

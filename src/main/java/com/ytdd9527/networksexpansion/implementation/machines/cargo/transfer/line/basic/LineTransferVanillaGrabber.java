@@ -46,7 +46,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 
-@SuppressWarnings("deprecation")
 public class LineTransferVanillaGrabber extends NetworkDirectional implements RecipeDisplayItem, Configurable {
     private static final int DEFAULT_MAX_DISTANCE = 32;
     private static final int DEFAULT_GRAB_ITEM_TICK = 1;
@@ -202,7 +201,7 @@ public class LineTransferVanillaGrabber extends NetworkDirectional implements Re
 
     private boolean grabItem(@Nonnull NetworkRoot root, @Nonnull BlockMenu blockMenu, @Nullable ItemStack stack) {
         if (stack != null && stack.getType() != Material.AIR) {
-            root.addItemStack(stack);
+            root.addItemStack0(blockMenu.getLocation(), stack);
             return true;
         } else {
             return false;
@@ -255,7 +254,7 @@ public class LineTransferVanillaGrabber extends NetworkDirectional implements Re
         return new Particle.DustOptions(Color.MAROON, 1);
     }
 
-    public List<ItemStack> getDisplayRecipes() {
+    public @Nonnull List<ItemStack> getDisplayRecipes() {
         List<ItemStack> displayRecipes = new ArrayList<>(6);
         displayRecipes.add(new CustomItemStack(Material.BOOK,
                 Networks.getLocalizationService().getString("icons.mechanism.transfers.data_title"),

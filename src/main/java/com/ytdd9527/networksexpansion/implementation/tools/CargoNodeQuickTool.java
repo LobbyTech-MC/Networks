@@ -1,10 +1,22 @@
 package com.ytdd9527.networksexpansion.implementation.tools;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import com.ytdd9527.networksexpansion.core.items.SpecialSlimefunItem;
+import io.github.sefiraat.networks.Networks;
+import io.github.sefiraat.networks.utils.Keys;
+import io.github.sefiraat.networks.utils.StackUtils;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
+import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -43,9 +55,9 @@ public class CargoNodeQuickTool extends SpecialSlimefunItem {
 
     public CargoNodeQuickTool(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
-        listKey = new NamespacedKey(Networks.getInstance(), "item_list");
-        configKey = new NamespacedKey(Networks.getInstance(), "config");
-        cargoKey = new NamespacedKey(Networks.getInstance(), "cargo_type");
+        listKey = Keys.newKey("item_list");
+        configKey = Keys.newKey("config");
+        cargoKey = Keys.newKey("cargo_type");
     }
 
     @Override
@@ -58,7 +70,7 @@ public class CargoNodeQuickTool extends SpecialSlimefunItem {
             ItemStack tool = e.getItem();
             Player p = e.getPlayer();
             if (!isTool(tool)) {
-                // Not holding the a valid tool, return
+                // Not holding a valid tool, return
                 p.sendMessage(Networks.getLocalizationService().getString("messages.unsupported-operation.cargo_node_quick_tool.invalid_tool"));
                 return;
             }
@@ -120,7 +132,7 @@ public class CargoNodeQuickTool extends SpecialSlimefunItem {
                             ex.printStackTrace();
                             return;
                         }
-                        if (itemConfig.getKeys(false).size() > 0) {
+                        if (!itemConfig.getKeys(false).isEmpty()) {
                             Map<ItemStack, Boolean> itemList = new HashMap<>();
                             Map<ItemStack, Integer> consumeSlots = new HashMap<>();
                             //init item check list
@@ -208,7 +220,7 @@ public class CargoNodeQuickTool extends SpecialSlimefunItem {
 
     private boolean isTool(ItemStack tool) {
         if (tool != null && tool.getItemMeta() != null) {
-            NamespacedKey idKey = new NamespacedKey(Slimefun.instance(), "slimefun_item");
+            NamespacedKey idKey = Keys.customNewKey(Slimefun.instance(), "slimefun_item");
             PersistentDataContainer container = tool.getItemMeta().getPersistentDataContainer();
             if (container.has(idKey, PersistentDataType.STRING))
                 return container.get(idKey, PersistentDataType.STRING).equalsIgnoreCase(getId()) && (tool.getAmount() == 1);

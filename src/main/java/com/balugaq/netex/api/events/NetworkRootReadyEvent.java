@@ -2,7 +2,8 @@ package com.balugaq.netex.api.events;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 import io.github.sefiraat.networks.network.NetworkRoot;
 import lombok.Getter;
@@ -17,11 +18,11 @@ public class NetworkRootReadyEvent extends Event {
         this.root = root;
     }
 
-    public static HandlerList getHandlerList() {
+    public static @Nonnull HandlerList getHandlerList() {
         return handlers;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public HandlerList getHandlers() {
         return handlers;

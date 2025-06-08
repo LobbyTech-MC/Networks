@@ -47,6 +47,7 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction
 import io.github.thebusybiscuit.slimefun4.utils.ChatUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import lombok.Getter;
+import lombok.Setter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
@@ -95,6 +96,7 @@ public class NetworkQuantumStorage extends SpecialSlimefunItem implements Distin
 
     @Getter
     private final int maxAmount;
+    @Setter
     private boolean supportsCustomMaxAmount = false;
 
     public NetworkQuantumStorage(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, int maxAmount) {
@@ -126,6 +128,7 @@ public class NetworkQuantumStorage extends SpecialSlimefunItem implements Distin
         if (cache.getItemStack() == null) {
             return;
         }
+
         for (ItemStack itemStack : input) {
             if (isBlacklisted(itemStack)) {
                 continue;
@@ -195,7 +198,16 @@ public class NetworkQuantumStorage extends SpecialSlimefunItem implements Distin
             menu.replaceExistingItem(ITEM_SLOT, Icon.QUANTUM_STORAGE_NO_ITEM);
         } else {
             final ItemStack itemStack = cache.getItemStack().clone();
+            if (itemStack.getType() == Material.AIR) {
+                menu.replaceExistingItem(ITEM_SLOT, Icon.QUANTUM_STORAGE_NO_ITEM);
+                return;
+            }
             final ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta == null) {
+                menu.replaceExistingItem(ITEM_SLOT, Icon.QUANTUM_STORAGE_NO_ITEM);
+                return;
+            }
+
             final List<String> lore = itemMeta.hasLore() ? itemMeta.getLore() : new ArrayList<>();
 
             lore.add("");
@@ -228,6 +240,25 @@ public class NetworkQuantumStorage extends SpecialSlimefunItem implements Distin
 
     public static int[] getSizes() {
         return SIZES;
+    }
+
+    public static void setItem(@Nonnull BlockMenu blockMenu, @Nonnull Player player) {
+        final ItemStack itemStack = player.getItemOnCursor().clone();
+
+        if (isBlacklisted(itemStack)) {
+            return;
+        }
+
+        final QuantumCache cache = CACHES.get(blockMenu.getLocation());
+        if (cache == null || cache.getAmount() > 0) {
+            player.sendMessage(Networks.getLocalizationService().getString("messages.unsupported-operation.quantum_storage.quantum_storage_not_empty"));
+            return;
+        }
+        itemStack.setAmount(1);
+        cache.setItemStack(itemStack);
+        updateDisplayItem(blockMenu, cache);
+        syncBlock(blockMenu.getLocation(), cache);
+        CACHES.put(blockMenu.getLocation(), cache);
     }
 
     @Override
@@ -316,25 +347,6 @@ public class NetworkQuantumStorage extends SpecialSlimefunItem implements Distin
         CACHES.put(blockMenu.getLocation(), cache);
     }
 
-    private void setItem(@Nonnull BlockMenu blockMenu, @Nonnull Player player) {
-        final ItemStack itemStack = player.getItemOnCursor().clone();
-
-        if (isBlacklisted(itemStack)) {
-            return;
-        }
-
-        final QuantumCache cache = CACHES.get(blockMenu.getLocation());
-        if (cache == null || cache.getAmount() > 0) {
-            player.sendMessage(Networks.getLocalizationService().getString("messages.unsupported-operation.quantum_storage.quantum_storage_not_empty"));
-            return;
-        }
-        itemStack.setAmount(1);
-        cache.setItemStack(itemStack);
-        updateDisplayItem(blockMenu, cache);
-        syncBlock(blockMenu.getLocation(), cache);
-        CACHES.put(blockMenu.getLocation(), cache);
-    }
-
     private void setCustomMaxAmount(@Nonnull BlockMenu blockMenu, @Nonnull Player player, int newMaxAmount) {
         final QuantumCache cache = CACHES.get(blockMenu.getLocation());
         if (cache == null || !cache.supportsCustomMaxAmount()) {
@@ -348,10 +360,6 @@ public class NetworkQuantumStorage extends SpecialSlimefunItem implements Distin
         CACHES.put(blockMenu.getLocation(), cache);
 
         player.sendMessage(String.format(Networks.getLocalizationService().getString("messages.completed-operation.changed_custom_max_amount"), newMaxAmount));
-    }
-
-    public void setSupportsCustomMaxAmount(boolean supportsCustomMaxAmount) {
-        this.supportsCustomMaxAmount = supportsCustomMaxAmount;
     }
 
     @Override
@@ -559,14 +567,14 @@ public class NetworkQuantumStorage extends SpecialSlimefunItem implements Distin
             final ItemMeta itemMeta = clone.getItemMeta();
             final List<String> lore = itemMeta.getLore();
             for (int i = 0; i < 3; i++) {
-                if (lore.size() == 0) {
+                if (lore.isEmpty()) {
                     break;
                 }
                 lore.remove(lore.size() - 1);
             }
 
             if (supportsCustomMaxAmount) {
-                if (lore.size() != 0) {
+                if (!lore.isEmpty()) {
                     lore.remove(lore.size() - 1);
                 }
             }
@@ -631,10 +639,6 @@ public class NetworkQuantumStorage extends SpecialSlimefunItem implements Distin
 
     public boolean supportsCustomMaxAmount() {
         return this.supportsCustomMaxAmount;
-    }
-
-    public int getMaxAmount() {
-        return maxAmount;
     }
 
     @Override

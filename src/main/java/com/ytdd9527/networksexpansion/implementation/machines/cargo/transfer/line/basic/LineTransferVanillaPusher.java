@@ -190,15 +190,14 @@ public class LineTransferVanillaPusher extends NetworkDirectional implements Rec
                 boolean isChest = wildChests && WildChestsAPI.getChest(targetBlock.getLocation()) != null;
 
                 if (inventory instanceof FurnaceInventory furnace) {
-                    handleFurnace(root, template, furnace);
+                    handleFurnace(root, template, furnace, blockMenu);
                 } else if (inventory instanceof BrewerInventory brewer) {
-                    handleBrewingStand(root, template, brewer);
+                    handleBrewingStand(root, template, brewer, blockMenu);
                 } else if (wildChests && isChest) {
-                    continue;
                 } else if (InvUtils.fits(holder.getInventory(), template)) {
                     for (ItemStack targetItem : inventory.getContents()) {
                         if (targetItem == null || targetItem.getType() == Material.AIR) {
-                            final ItemStack stack = root.getItemStack(new ItemRequest(template, template.getMaxStackSize()));
+                            final ItemStack stack = root.getItemStack0(blockMenu.getLocation(), new ItemRequest(template, template.getMaxStackSize()));
                             if (stack == null) {
                                 break;
                             }
@@ -207,7 +206,7 @@ public class LineTransferVanillaPusher extends NetworkDirectional implements Rec
                         } else if (StackUtils.itemsMatch(targetItem, template)) {
                             int canAdd = template.getMaxStackSize() - targetItem.getAmount();
                             if (canAdd > 0) {
-                                final ItemStack stack = root.getItemStack(new ItemRequest(template, canAdd));
+                                final ItemStack stack = root.getItemStack0(blockMenu.getLocation(), new ItemRequest(template, canAdd));
                                 if (stack == null) {
                                     break;
                                 }
@@ -223,18 +222,18 @@ public class LineTransferVanillaPusher extends NetworkDirectional implements Rec
         sendFeedback(blockMenu.getLocation(), FeedbackType.WORKING);
     }
 
-    private void handleFurnace(@Nonnull NetworkRoot root, @Nonnull ItemStack template, @Nonnull FurnaceInventory furnace) {
+    private void handleFurnace(@Nonnull NetworkRoot root, @Nonnull ItemStack template, @Nonnull FurnaceInventory furnace, @Nonnull BlockMenu blockMenu) {
         if (template.getType().isFuel()
                 && (furnace.getFuel() == null || furnace.getFuel().getType() == Material.AIR)
         ) {
-            final ItemStack stack = root.getItemStack(new ItemRequest(template, template.getMaxStackSize()));
+            final ItemStack stack = root.getItemStack0(blockMenu.getLocation(), new ItemRequest(template, template.getMaxStackSize()));
             if (stack == null) {
                 return;
             }
             furnace.setFuel(stack.clone());
             stack.setAmount(0);
         } else if (!template.getType().isFuel() && furnace.getSmelting() == null || furnace.getSmelting().getType() == Material.AIR) {
-            final ItemStack stack = root.getItemStack(new ItemRequest(template, template.getMaxStackSize()));
+            final ItemStack stack = root.getItemStack0(blockMenu.getLocation(), new ItemRequest(template, template.getMaxStackSize()));
             if (stack == null) {
                 return;
             }
@@ -243,10 +242,10 @@ public class LineTransferVanillaPusher extends NetworkDirectional implements Rec
         }
     }
 
-    private void handleBrewingStand(@Nonnull NetworkRoot root, @Nonnull ItemStack template, @Nonnull BrewerInventory brewer) {
+    private void handleBrewingStand(@Nonnull NetworkRoot root, @Nonnull ItemStack template, @Nonnull BrewerInventory brewer, @Nonnull BlockMenu blockMenu) {
         if (template.getType() == Material.BLAZE_POWDER) {
             if (brewer.getFuel() == null || brewer.getFuel().getType() == Material.AIR) {
-                final ItemStack stack = root.getItemStack(new ItemRequest(template.clone(), template.getMaxStackSize()));
+                final ItemStack stack = root.getItemStack0(blockMenu.getLocation(), new ItemRequest(template.clone(), template.getMaxStackSize()));
                 if (stack == null) {
                     return;
                 }
@@ -254,7 +253,7 @@ public class LineTransferVanillaPusher extends NetworkDirectional implements Rec
                 stack.setAmount(0);
             } else if (brewer.getIngredient() == null || brewer.getIngredient().getType() == Material.AIR) {
                 if (brewer.getIngredient() == null || brewer.getIngredient().getType() == Material.AIR) {
-                    final ItemStack stack = root.getItemStack(new ItemRequest(template.clone(), template.getMaxStackSize()));
+                    final ItemStack stack = root.getItemStack0(blockMenu.getLocation(), new ItemRequest(template.clone(), template.getMaxStackSize()));
                     if (stack == null) {
                         return;
                     }
@@ -267,7 +266,7 @@ public class LineTransferVanillaPusher extends NetworkDirectional implements Rec
                 final ItemStack stackInSlot = brewer.getContents()[i];
                 if (stackInSlot == null || stackInSlot.getType() == Material.AIR) {
                     final ItemStack[] contents = brewer.getContents();
-                    final ItemStack stack = root.getItemStack(new ItemRequest(template.clone(), template.getMaxStackSize()));
+                    final ItemStack stack = root.getItemStack0(blockMenu.getLocation(), new ItemRequest(template.clone(), template.getMaxStackSize()));
                     if (stack == null) {
                         return;
                     }
@@ -278,7 +277,7 @@ public class LineTransferVanillaPusher extends NetworkDirectional implements Rec
                 }
             }
         } else if (brewer.getIngredient() == null || brewer.getIngredient().getType() == Material.AIR) {
-            final ItemStack stack = root.getItemStack(new ItemRequest(template.clone(), template.getMaxStackSize()));
+            final ItemStack stack = root.getItemStack0(blockMenu.getLocation(), new ItemRequest(template.clone(), template.getMaxStackSize()));
             if (stack == null) {
                 return;
             }
@@ -338,7 +337,7 @@ public class LineTransferVanillaPusher extends NetworkDirectional implements Rec
         return new Particle.DustOptions(Color.MAROON, 1);
     }
 
-    public List<ItemStack> getDisplayRecipes() {
+    public @Nonnull List<ItemStack> getDisplayRecipes() {
         List<ItemStack> displayRecipes = new ArrayList<>(6);
         displayRecipes.add(new CustomItemStack(Material.BOOK,
                 Networks.getLocalizationService().getString("icons.mechanism.transfers.data_title"),

@@ -113,6 +113,7 @@ public class AdvancedLineTransferMorePusher extends AdvancedDirectional implemen
             }
         }
     }
+
     @Override
     protected void onTick(@Nullable BlockMenu blockMenu, @Nonnull Block block) {
         super.onTick(blockMenu, block);
@@ -180,9 +181,7 @@ public class AdvancedLineTransferMorePusher extends AdvancedDirectional implemen
                 maxDistance,
                 false,
                 false,
-                (targetMenu) -> {
-                    LineOperationUtil.pushItem(root, targetMenu, templates, currentTransportMode, limitQuantity);
-                });
+                (targetMenu) -> LineOperationUtil.pushItem(blockMenu.getLocation(), root, targetMenu, templates, currentTransportMode, limitQuantity));
         sendFeedback(blockMenu.getLocation(), FeedbackType.WORKING);
     }
 

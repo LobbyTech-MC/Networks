@@ -26,7 +26,6 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 
-@SuppressWarnings("deprecation")
 public class NetworkWirelessReceiver extends NetworkObject {
 
     public static final int RECEIVED_SLOT = 13;
@@ -81,7 +80,7 @@ public class NetworkWirelessReceiver extends NetworkObject {
             return;
         }
 
-        definition.getNode().getRoot().addItemStack(itemStack);
+        definition.getNode().getRoot().addItemStack0(blockMenu.getLocation(), itemStack);
         sendFeedback(blockMenu.getLocation(), FeedbackType.WORKING);
 
     }

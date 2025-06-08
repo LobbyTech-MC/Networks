@@ -98,7 +98,7 @@ public class AdvancedExport extends NetworkObject implements RecipeDisplayItem {
                 },
                 new BlockBreakHandler(true, true) {
                     @Override
-                    public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
+                    public void onPlayerBreak(@Nonnull BlockBreakEvent e, @Nonnull ItemStack item, @Nonnull List<ItemStack> drops) {
                         BlockMenu blockMenu = StorageCacheUtils.getMenu(e.getBlock().getLocation());
 
                         for (int testitemslot : getTestSlots()) {
@@ -154,9 +154,9 @@ public class AdvancedExport extends NetworkObject implements RecipeDisplayItem {
         }
 
         // fetch items from network
-        ItemStack fetched = null;
+        ItemStack fetched;
         for (ItemRequest itemRequest : itemRequests) {
-            fetched = networkRoot.getItemStack(itemRequest); // fetch item from network
+            fetched = networkRoot.getItemStack0(blockMenu.getLocation(), itemRequest); // fetch item from network
             if (fetched != null) {
                 // amount may not be excepted, but it is the max amount we can fetch.
                 placeItems(networkRoot, blockMenu, fetched.clone(), fetched.getAmount(), getOutputSlots());
@@ -165,16 +165,16 @@ public class AdvancedExport extends NetworkObject implements RecipeDisplayItem {
         sendFeedback(blockMenu.getLocation(), FeedbackType.WORKING);
     }
 
-    private void placeItems(@Nonnull NetworkRoot root, @Nonnull BlockMenu blockMenu, @Nonnull ItemStack itemStack, @Nonnull int itemAmount, int[] outputSlots) {
+    private void placeItems(@Nonnull NetworkRoot root, @Nonnull BlockMenu blockMenu, @Nonnull ItemStack itemStack, int itemAmount, int[] outputSlots) {
         BlockMenuUtil.pushItem(blockMenu, itemStack, outputSlots);
 
         if (itemStack.getAmount() > 0) {
-            returnItems(root, itemStack.clone());
+            returnItems(root, itemStack.clone(), blockMenu);
         }
     }
 
-    private void returnItems(@Nonnull NetworkRoot root, @Nonnull ItemStack itemStack) {
-        root.addItemStack(itemStack);
+    private void returnItems(@Nonnull NetworkRoot root, @Nonnull ItemStack itemStack, @Nonnull BlockMenu blockMenu) {
+        root.addItemStack0(blockMenu.getLocation(), itemStack);
     }
 
     @Override

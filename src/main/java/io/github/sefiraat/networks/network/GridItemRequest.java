@@ -1,10 +1,11 @@
 package io.github.sefiraat.networks.network;
 
+import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import io.github.sefiraat.networks.network.stackcaches.ItemRequest;
-
+@Getter
 public class GridItemRequest extends ItemRequest {
 
     private final Player player;
@@ -14,7 +15,4 @@ public class GridItemRequest extends ItemRequest {
         this.player = player;
     }
 
-    public Player getPlayer() {
-        return player;
-    }
 }

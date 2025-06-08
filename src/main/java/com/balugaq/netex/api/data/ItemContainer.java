@@ -5,18 +5,23 @@ import org.bukkit.inventory.ItemStack;
 import io.github.sefiraat.networks.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
 
 @Getter
 public class ItemContainer {
 
     private final int id;
-    private final ItemStack sample;
+    private final @Nonnull ItemStack sample;
     @Getter
-    private final ItemStackWrapper wrapper;
+    private final @Nonnull ItemStackWrapper wrapper;
+    @Setter
     @Getter
     private int amount;
 
-    public ItemContainer(int id, ItemStack item, int amount) {
+    public ItemContainer(int id, @Nonnull ItemStack item, int amount) {
         this.id = id;
         this.sample = item.clone();
         sample.setAmount(1);
@@ -24,8 +29,12 @@ public class ItemContainer {
         this.amount = amount;
     }
 
-    public ItemStack getSample() {
+    public @Nonnull ItemStack getSample() {
         return sample.clone();
+    }
+
+    public ItemStack getSampleDirectly() {
+        return sample;
     }
 
     public boolean isSimilar(ItemStack other) {
@@ -53,11 +62,7 @@ public class ItemContainer {
         }
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public String toString() {
+    public @Nonnull String toString() {
         return "ItemContainer{" +
                 "id=" + id +
                 ", sample=" + sample +

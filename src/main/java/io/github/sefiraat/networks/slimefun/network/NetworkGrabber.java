@@ -22,7 +22,6 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 
-@SuppressWarnings("deprecation")
 public class NetworkGrabber extends NetworkDirectional {
 
 
@@ -61,7 +60,7 @@ public class NetworkGrabber extends NetworkDirectional {
 
             if (itemStack != null && itemStack.getType() != Material.AIR) {
                 int before = itemStack.getAmount();
-                definition.getNode().getRoot().addItemStack(itemStack);
+                definition.getNode().getRoot().addItemStack0(blockMenu.getLocation(), itemStack);
                 sendFeedback(blockMenu.getLocation(), FeedbackType.WORKING);
                 if (definition.getNode().getRoot().isDisplayParticles() && itemStack.getAmount() < before) {
                     showParticle(blockMenu.getLocation(), direction);

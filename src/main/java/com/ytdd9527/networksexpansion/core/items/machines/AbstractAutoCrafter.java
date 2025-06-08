@@ -6,15 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.balugaq.netex.api.enums.FeedbackType;
 import com.balugaq.netex.api.helpers.Icon;
@@ -41,6 +32,21 @@ import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public abstract class AbstractAutoCrafter extends NetworkObject {
     private static final int[] BACKGROUND_SLOTS = new int[]{
@@ -48,9 +54,9 @@ public abstract class AbstractAutoCrafter extends NetworkObject {
     };
     private static final int[] BLUEPRINT_BACKGROUND = new int[]{0, 1, 2, 9, 11, 18, 19, 20};
     private static final int[] OUTPUT_BACKGROUND = new int[]{6, 7, 8, 15, 17, 24, 25, 26};
-    private static final int BLUEPRINT_SLOT = 10;
-    private static final int OUTPUT_SLOT = 16;
-    private static final Map<Location, BlueprintInstance> INSTANCE_MAP = new HashMap<>();
+    public static final int BLUEPRINT_SLOT = 10;
+    public static final int OUTPUT_SLOT = 16;
+    public static final Map<Location, BlueprintInstance> INSTANCE_MAP = new HashMap<>();
     private final int chargePerCraft;
     private final boolean withholding;
 
@@ -106,7 +112,7 @@ public abstract class AbstractAutoCrafter extends NetworkObject {
         if (!this.withholding) {
             final ItemStack stored = blockMenu.getItemInSlot(OUTPUT_SLOT);
             if (stored != null && stored.getType() != Material.AIR) {
-                root.addItemStack(stored);
+                root.addItemStack0(blockMenu.getLocation(), stored);
             }
         }
 
@@ -200,7 +206,7 @@ public abstract class AbstractAutoCrafter extends NetworkObject {
         for (int i = 0; i < 9; i++) {
             final ItemStack requested = instance.getRecipeItems()[i];
             if (requested != null) {
-                final ItemStack fetched = root.getItemStack(new ItemRequest(requested, requested.getAmount()));
+                final ItemStack fetched = root.getItemStack0(blockMenu.getLocation(), new ItemRequest(requested, requested.getAmount()));
                 inputs[i] = fetched;
             } else {
                 inputs[i] = null;
@@ -222,7 +228,7 @@ public abstract class AbstractAutoCrafter extends NetworkObject {
             // If no slimefun recipe found, try a vanilla one
             instance.generateVanillaRecipe(blockMenu.getLocation().getWorld());
             if (instance.getRecipe() == null) {
-                returnItems(root, inputs);
+                returnItems(root, inputs, blockMenu);
                 sendDebugMessage(blockMenu.getLocation(), "No vanilla recipe found");
                 sendFeedback(blockMenu.getLocation(), FeedbackType.NO_VANILLA_RECIPE_FOUND);
                 return false;
@@ -237,7 +243,7 @@ public abstract class AbstractAutoCrafter extends NetworkObject {
             sendDebugMessage(blockMenu.getLocation(), "No valid recipe found");
             sendDebugMessage(blockMenu.getLocation(), "inputs: " + Arrays.toString(inputs));
             sendFeedback(blockMenu.getLocation(), FeedbackType.NO_VALID_RECIPE_FOUND);
-            returnItems(root, inputs);
+            returnItems(root, inputs, blockMenu);
             return false;
         }
 
@@ -251,10 +257,10 @@ public abstract class AbstractAutoCrafter extends NetworkObject {
         return true;
     }
 
-    private void returnItems(@Nonnull NetworkRoot root, @Nonnull ItemStack[] inputs) {
+    private void returnItems(@Nonnull NetworkRoot root, @Nonnull ItemStack[] inputs, @Nonnull BlockMenu blockMenu) {
         for (ItemStack input : inputs) {
             if (input != null) {
-                root.addItemStack(input);
+                root.addItemStack0(blockMenu.getLocation(), input);
             }
         }
     }
@@ -315,5 +321,9 @@ public abstract class AbstractAutoCrafter extends NetworkObject {
 
     public boolean canTestVanillaRecipe() {
         return false;
+    }
+
+    public static void updateCache(@Nonnull BlockMenu blockMenu) {
+        AbstractAutoCrafter.INSTANCE_MAP.remove(blockMenu.getLocation());
     }
 }

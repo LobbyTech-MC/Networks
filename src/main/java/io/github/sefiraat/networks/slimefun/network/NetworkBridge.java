@@ -1,13 +1,14 @@
 package io.github.sefiraat.networks.slimefun.network;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Function;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
+import com.ytdd9527.networksexpansion.utils.DisplayGroupGenerators;
+import dev.sefiraat.sefilib.entity.display.DisplayGroup;
+import io.github.sefiraat.networks.Networks;
+import io.github.sefiraat.networks.network.NodeType;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,6 +29,7 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 public class NetworkBridge extends NetworkObject {
 
     private static final String KEY_UUID = "display-uuid";
+    @Setter
     private boolean useSpecialModel = false;
     private Function<Location, DisplayGroup> displayGroupGenerator;
 
@@ -65,7 +67,7 @@ public class NetworkBridge extends NetworkObject {
     }
 
     @Override
-    public void onPlace(BlockPlaceEvent e) {
+    public void onPlace(@Nonnull BlockPlaceEvent e) {
         super.onPlace(e);
         if (useSpecialModel) {
             e.getBlock().setType(Material.BARRIER);
@@ -74,15 +76,11 @@ public class NetworkBridge extends NetworkObject {
     }
 
     @Override
-    public void postBreak(BlockBreakEvent e) {
+    public void postBreak(@Nonnull BlockBreakEvent e) {
         super.postBreak(e);
         Location location = e.getBlock().getLocation();
         removeDisplay(location);
         e.getBlock().setType(Material.AIR);
-    }
-
-    public void setUseSpecialModel(boolean useSpecialModel) {
-        this.useSpecialModel = useSpecialModel;
     }
 
     private void setupDisplay(@Nonnull Location location) {

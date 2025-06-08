@@ -8,9 +8,8 @@ import javax.annotation.Nonnull;
 import org.bukkit.inventory.ItemStack;
 
 import com.balugaq.netex.api.interfaces.CanTestRecipe;
-import com.balugaq.netex.api.interfaces.HasRecipes;
+import com.balugaq.netex.api.interfaces.RecipesHolder;
 import com.ytdd9527.networksexpansion.implementation.machines.manual.ExpansionWorkbench;
-
 import io.github.sefiraat.networks.utils.StackUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
@@ -19,7 +18,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.items.backpacks.Slimefu
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public final class SupportedExpansionWorkbenchRecipes implements HasRecipes, CanTestRecipe {
+public final class SupportedExpansionWorkbenchRecipes implements RecipesHolder, CanTestRecipe {
 
     private static final Map<ItemStack[], ItemStack> RECIPES = new HashMap<>();
 
@@ -44,7 +43,7 @@ public final class SupportedExpansionWorkbenchRecipes implements HasRecipes, Can
         }
     }
 
-    public static Map<ItemStack[], ItemStack> getRecipes() {
+    public static @Nonnull Map<ItemStack[], ItemStack> getRecipes() {
         return RECIPES;
     }
 

@@ -53,11 +53,11 @@ public class CraftItemGroup extends FlexItemGroup {
     private static final Map<SlimefunItem, CraftItemGroup> ITEM_MAP = new LinkedHashMap<>();
 
     private final int page;
-    private final SlimefunItem slimefunItem;
-    private final List<SlimefunItem> slimefunItemList;
+    private final @Nonnull SlimefunItem slimefunItem;
+    private final @Nonnull List<SlimefunItem> slimefunItemList;
     private Map<Integer, CraftItemGroup> pageMap = new LinkedHashMap<>();
 
-    protected CraftItemGroup(NamespacedKey key, SlimefunItem slimefunItem) {
+    protected CraftItemGroup(@Nonnull NamespacedKey key, @Nonnull SlimefunItem slimefunItem) {
         super(key, ItemStackUtil.getCleanItem(ItemStackUtil.cloneWithoutNBT(slimefunItem.getItem())));
         this.page = 1;
         this.slimefunItem = slimefunItem;
@@ -74,7 +74,7 @@ public class CraftItemGroup extends FlexItemGroup {
         ITEM_MAP.put(slimefunItem, this);
     }
 
-    protected CraftItemGroup(NamespacedKey key, SlimefunItem slimefunItem, int page) {
+    protected CraftItemGroup(@Nonnull NamespacedKey key, @Nonnull SlimefunItem slimefunItem, int page) {
         super(key, ItemStackUtil.getCleanItem(ItemStackUtil.cloneWithoutNBT(slimefunItem.getItem())));
         this.page = page;
         this.slimefunItem = slimefunItem;
@@ -99,7 +99,7 @@ public class CraftItemGroup extends FlexItemGroup {
     }
 
     @Override
-    public void open(Player player, PlayerProfile playerProfile, SlimefunGuideMode slimefunGuideMode) {
+    public void open(@Nonnull Player player, @Nonnull PlayerProfile playerProfile, @Nonnull SlimefunGuideMode slimefunGuideMode) {
         playerProfile.getGuideHistory().add(this, this.page);
         this.generateMenu(player, playerProfile, slimefunGuideMode).open(player);
     }
@@ -211,7 +211,7 @@ public class CraftItemGroup extends FlexItemGroup {
                 if (this.pageMap.containsKey(page)) {
                     return this.pageMap.get(page);
                 }
-                CraftItemGroup craftItemGroup = new CraftItemGroup(new NamespacedKey(JAVA_PLUGIN, this.getKey().getKey() + "_" + page), this.slimefunItem, page);
+                CraftItemGroup craftItemGroup = new CraftItemGroup(Keys.customNewKey(JAVA_PLUGIN, this.getKey().getKey() + "_" + page), this.slimefunItem, page);
                 craftItemGroup.pageMap = this.pageMap;
                 this.pageMap.put(page, craftItemGroup);
                 return craftItemGroup;

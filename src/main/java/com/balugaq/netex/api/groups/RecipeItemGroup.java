@@ -35,7 +35,7 @@ public class RecipeItemGroup extends FlexItemGroup {
     private static final Map<String, RecipeItemGroup> ID_MAP = new HashMap<>();
     private static final int SMALL_LIMIT = 9;
     private static final int BIG_LIMIT = 36;
-    private final String id;
+    private final @Nonnull String id;
     private final int page;
 
     public RecipeItemGroup(@Nonnull NamespacedKey key, @Nonnull SlimefunItem slimefunItem) {

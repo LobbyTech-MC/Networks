@@ -2,7 +2,6 @@ package com.balugaq.netex.api.data;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -13,9 +12,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import com.google.common.base.Preconditions;
 
 public final class Language {
-    private final String lang;
-    private final File currentFile;
-    private final FileConfiguration currentConfig;
+    private final @Nonnull String lang;
+    private final @Nonnull File currentFile;
+    private final @Nonnull FileConfiguration currentConfig;
 
     @ParametersAreNonnullByDefault
     public Language(String lang, File currentFile, FileConfiguration defaultConfig) {
@@ -26,10 +25,8 @@ public final class Language {
         this.currentFile = currentFile;
         this.currentConfig = YamlConfiguration.loadConfiguration(currentFile);
         this.currentConfig.setDefaults(defaultConfig);
-        Iterator var4 = defaultConfig.getKeys(true).iterator();
 
-        while (var4.hasNext()) {
-            String key = (String) var4.next();
+        for (String key : defaultConfig.getKeys(true)) {
             if (!this.currentConfig.contains(key)) {
                 this.currentConfig.set(key, defaultConfig.get(key));
             }

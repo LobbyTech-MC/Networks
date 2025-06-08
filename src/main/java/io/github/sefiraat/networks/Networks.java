@@ -1,26 +1,6 @@
 package io.github.sefiraat.networks;
 
-import java.sql.SQLException;
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.AdvancedPie;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.yaml.snakeyaml.error.YAMLException;
-
+import com.balugaq.netex.api.data.ItemFlowRecord;
 import com.balugaq.netex.api.enums.MinecraftVersion;
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
@@ -37,18 +17,23 @@ import io.github.sefiraat.networks.integrations.NetheoPlants;
 import io.github.sefiraat.networks.managers.ListenerManager;
 import io.github.sefiraat.networks.managers.SupportedPluginManager;
 import io.github.sefiraat.networks.slimefun.NetworksSlimefunItemStacks;
+import io.github.sefiraat.networks.slimefun.network.AdminDebuggable;
 import io.github.sefiraat.networks.slimefun.network.NetworkController;
 import io.github.sefiraat.networks.utils.NetworkUtils;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.paperlib.PaperLib;
+import lombok.Getter;
 import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
 
 public class Networks extends JavaPlugin implements SlimefunAddon {
     private static final String DEFAULT_LANGUAGE = "zh-CN";
     private static Networks instance;
+    @Getter
     private static DataSource dataSource;
+    @Getter
     private static QueryQueue queryQueue;
+    @Getter
     private static BukkitRunnable autoSaveThread;
     private static MinecraftVersion minecraftVersion = MinecraftVersion.UNKNOWN;
     private final String username;
@@ -69,18 +54,6 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
 
     public static ConfigManager getConfigManager() {
         return Networks.getInstance().configManager;
-    }
-
-    public static QueryQueue getQueryQueue() {
-        return queryQueue;
-    }
-
-    public static DataSource getDataSource() {
-        return dataSource;
-    }
-
-    public static BukkitRunnable getAutoSaveThread() {
-        return autoSaveThread;
     }
 
     public static Networks getInstance() {
@@ -173,35 +146,43 @@ public class Networks extends JavaPlugin implements SlimefunAddon {
 
         setupMetrics();
 
-        Bukkit.getScheduler()
-                .runTaskTimer(
-                        this,
-                        () -> slimefunTickCount++,
-                        1,
-                        Slimefun.getTickerTask().getTickRate());
+        Bukkit.getScheduler().runTaskTimer(
+                this,
+                () -> slimefunTickCount++,
+                1,
+                Slimefun.getTickerTask().getTickRate()
+        );
 
         // Fix dupe bug which break the network controller data without player interaction
-        Bukkit.getScheduler()
-                .runTaskTimer(
-                        this,
-                        () -> {
-                            Set<Location> wrongs = new HashSet<>();
-                            Set<Location> controllers = NetworkController.getNetworks().keySet();
-                            for (Location controller : controllers) {
-                                SlimefunBlockData data = StorageCacheUtils.getBlock(controller);
-                                if (data == null || !NetworksSlimefunItemStacks.NETWORK_CONTROLLER.getItemId().equals(data.getSfId())) {
-                                    wrongs.add(controller);
-                                }
-                            }
+        Bukkit.getScheduler().runTaskTimer(
+                this,
+                () -> {
+                    Set<Location> wrongs = new HashSet<>();
+                    Set<Location> controllers = new HashSet<>(NetworkController.getNetworks().keySet());
+                    for (Location controller : controllers) {
+                        SlimefunBlockData data = StorageCacheUtils.getBlock(controller);
+                        if (data == null || !NetworksSlimefunItemStacks.NETWORK_CONTROLLER.getItemId().equals(data.getSfId())) {
+                            wrongs.add(controller);
+                        }
+                    }
 
-                            for (Location wrong : wrongs) {
-                                NetworkUtils.clearNetwork(wrong);
-                            }
-                        },
-                        1,
-                        Slimefun.getTickerTask().getTickRate());
+                    for (Location wrong : wrongs) {
+                        NetworkUtils.clearNetwork(wrong);
+                    }
+                },
+                1,
+                Slimefun.getTickerTask().getTickRate()
+        );
+
+        Bukkit.getScheduler().runTaskTimer(
+                this,
+                () -> NetworkController.getRecords().values().forEach(ItemFlowRecord::gc),
+                1,
+                Slimefun.getTickerTask().getTickRate()
+        );
 
 
+        AdminDebuggable.load();
         getLogger().info(getLocalizationService().getString("messages.startup.enabled-successfully"));
     }
 

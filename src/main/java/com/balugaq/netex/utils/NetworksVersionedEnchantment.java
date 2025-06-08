@@ -14,8 +14,8 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class NetworksVersionedEnchantment {
-    public static final Enchantment GLOW;
-    public static final Enchantment LUCK_OF_THE_SEA;
+    public static final @javax.annotation.Nullable Enchantment GLOW;
+    public static final @javax.annotation.Nullable Enchantment LUCK_OF_THE_SEA;
 
     static {
         MinecraftVersion version = Networks.getInstance().getMCVersion();
@@ -27,7 +27,7 @@ public class NetworksVersionedEnchantment {
     private static Enchantment getKey(@Nonnull String key) {
         try {
             Field field = Enchantment.class.getDeclaredField(key);
-            return (Enchantment) field.get((Object) null);
+            return (Enchantment) field.get(null);
         } catch (Exception ignored) {
             return null;
         }

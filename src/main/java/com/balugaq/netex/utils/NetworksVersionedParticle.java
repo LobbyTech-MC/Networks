@@ -14,9 +14,9 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class NetworksVersionedParticle {
-    public static final Particle DUST;
-    public static final Particle EXPLOSION;
-    public static final Particle SMOKE;
+    public static final @javax.annotation.Nullable Particle DUST;
+    public static final @javax.annotation.Nullable Particle EXPLOSION;
+    public static final @javax.annotation.Nullable Particle SMOKE;
 
     static {
         MinecraftVersion version = Networks.getInstance().getMCVersion();
@@ -29,7 +29,7 @@ public class NetworksVersionedParticle {
     private static Particle getKey(@Nonnull String key) {
         try {
             Field field = Particle.class.getDeclaredField(key);
-            return (Particle) field.get((Object) null);
+            return (Particle) field.get(null);
         } catch (Exception ignored) {
             return null;
         }

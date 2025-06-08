@@ -20,8 +20,8 @@ import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 
 @Getter
 public class FluffyBarrel extends BarrelIdentity {
-    int limit;
-    boolean voidExcess;
+    final int limit;
+    final boolean voidExcess;
 
     public FluffyBarrel(Location location, ItemStack itemStack, int amount, int limit, boolean voidExcess) {
         super(location, itemStack, amount, BarrelType.FLUFFY);

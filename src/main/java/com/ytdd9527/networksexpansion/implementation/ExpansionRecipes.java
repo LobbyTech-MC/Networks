@@ -1097,4 +1097,34 @@ public class ExpansionRecipes {
             NETWORK_BRIDGE.getItem(), NETWORK_GRID.getItem(), NETWORK_BRIDGE.getItem(),
             NETWORK_BRIDGE.getItem(), OPTIC_CABLE.getItem(), NETWORK_BRIDGE.getItem()
     };
+
+    public static final ItemStack[] QUANTUM_MANAGER = new ItemStack[]{
+            NETWORK_BRIDGE.getItem(), NETWORK_QUANTUM_STORAGE_0.getItem(), NETWORK_BRIDGE.getItem(),
+            NETWORK_BRIDGE.getItem(), NETWORK_QUANTUM_STORAGE_0.getItem(), NETWORK_BRIDGE.getItem(),
+            NETWORK_BRIDGE.getItem(), NETWORK_QUANTUM_STORAGE_0.getItem(), NETWORK_BRIDGE.getItem()
+    };
+
+    public static final ItemStack[] DRAWER_MANAGER = new ItemStack[]{
+            NETWORK_BRIDGE.getItem(), ExpansionItemStacks.CARGO_STORAGE_UNIT_1, NETWORK_BRIDGE.getItem(),
+            NETWORK_BRIDGE.getItem(), ExpansionItemStacks.CARGO_STORAGE_UNIT_1, NETWORK_BRIDGE.getItem(),
+            NETWORK_BRIDGE.getItem(), ExpansionItemStacks.CARGO_STORAGE_UNIT_1, NETWORK_BRIDGE.getItem()
+    };
+
+    public static final ItemStack[] ITEM_FLOW_VIEWER = new ItemStack[]{
+            NETWORK_BRIDGE.getItem(), NETWORK_GRID.getItem(), NETWORK_BRIDGE.getItem(),
+            NETWORK_BRIDGE.getItem(), NETWORK_GRID.getItem(), NETWORK_BRIDGE.getItem(),
+            NETWORK_BRIDGE.getItem(), NETWORK_GRID.getItem(), NETWORK_BRIDGE.getItem()
+    };
+
+    public static final ItemStack[] ADVANCED_VACUUM = new ItemStack[]{
+            NETWORK_BRIDGE.getItem(), RADIOACTIVE_OPTIC_STAR.getItem(), NETWORK_BRIDGE.getItem(),
+            NETWORK_BRIDGE.getItem(), NETWORK_VACUUM.getItem(), NETWORK_BRIDGE.getItem(),
+            NETWORK_BRIDGE.getItem(), RADIOACTIVE_OPTIC_STAR.getItem(), NETWORK_BRIDGE.getItem()
+    };
+
+    public static final ItemStack[] CRAFTER_MANAGER = new ItemStack[]{
+            NETWORK_BRIDGE.getItem(), NETWORK_AUTO_CRAFTER.getItem(), NETWORK_BRIDGE.getItem(),
+            NETWORK_BRIDGE.getItem(), NETWORK_AUTO_CRAFTER.getItem(), NETWORK_BRIDGE.getItem(),
+            NETWORK_BRIDGE.getItem(), NETWORK_AUTO_CRAFTER.getItem(), NETWORK_BRIDGE.getItem()
+    };
 }

@@ -40,6 +40,7 @@ public class SetupUtil {
                 ExpansionItems.ADVANCED_QUANTUM_STORAGE.registerThis()
         );
         ExpansionItemsMenus.SUB_MENU_NETWORKS_DRAWERS.addTo(
+                ExpansionItems.DRAWER_TIPS.registerThis(),
                 ExpansionItems.CARGO_STORAGE_UNIT_1.registerThis(),
                 ExpansionItems.CARGO_STORAGE_UNIT_2.registerThis(),
                 ExpansionItems.CARGO_STORAGE_UNIT_3.registerThis(),
@@ -109,7 +110,11 @@ public class SetupUtil {
                 ExpansionItems.ADVANCED_TRANSFER_GRABBER.registerThis(),
                 ExpansionItems.ADVANCED_TRANSFER_PUSHER.registerThis(),
                 ExpansionItems.ADVANCED_TRANSFER_MORE_PUSHER.registerThis(),
-                ExpansionItems.ADVANCED_TRANSFER_BEST_PUSHER.registerThis()
+                ExpansionItems.ADVANCED_TRANSFER_BEST_PUSHER.registerThis(),
+                ExpansionItems.QUANTUM_MANAGER.registerThis(),
+                ExpansionItems.DRAWER_MANAGER.registerThis(),
+                ExpansionItems.CRAFTER_MANAGER.registerThis(),
+                ExpansionItems.ITEM_FLOW_VIEWER.registerThis()
         );
 
         ExpansionItemsMenus.SUB_MENU_CARGO.addTo(
@@ -127,6 +132,7 @@ public class SetupUtil {
                 ExpansionItems.ADVANCED_EXPORT.registerThis(),
                 ExpansionItems.ADVANCED_PURGER.registerThis(),
                 ExpansionItems.ADVANCED_GREEDY_BLOCK.registerThis(),
+                ExpansionItems.ADVANCED_VACUUM.registerThis(),
                 ExpansionItems.NETWORK_CAPACITOR_5.registerThis(),
                 ExpansionItems.NETWORK_CAPACITOR_6.registerThis(),
                 ExpansionItems.NETWORK_GRID_NEW_STYLE.registerThis(),

@@ -34,7 +34,6 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 
-@SuppressWarnings("deprecation")
 public class NetworkWirelessTransmitter extends NetworkObject {
 
     public static final int TEMPLATE_SLOT = 13;
@@ -156,7 +155,7 @@ public class NetworkWirelessTransmitter extends NetworkObject {
                 return;
             }
 
-            final ItemStack stackToPush = definition.getNode().getRoot().getItemStack(
+            final ItemStack stackToPush = definition.getNode().getRoot().getItemStack0(blockMenu.getLocation(),
                     new ItemRequest(templateStack.clone(), templateStack.getMaxStackSize())
             );
 

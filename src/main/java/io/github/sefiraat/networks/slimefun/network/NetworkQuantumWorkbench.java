@@ -19,6 +19,7 @@ import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import com.ytdd9527.networksexpansion.core.items.SpecialSlimefunItem;
 
 import io.github.sefiraat.networks.Networks;
+import io.github.sefiraat.networks.events.NetworkCraftEvent;
 import io.github.sefiraat.networks.network.stackcaches.QuantumCache;
 import io.github.sefiraat.networks.utils.Keys;
 import io.github.sefiraat.networks.utils.datatypes.DataTypeMethods;
@@ -34,8 +35,19 @@ import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-@SuppressWarnings("deprecation")
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class NetworkQuantumWorkbench extends SpecialSlimefunItem {
 
     private static final int[] BACKGROUND_SLOTS = {
@@ -161,6 +173,15 @@ public class NetworkQuantumWorkbench extends SpecialSlimefunItem {
                         menu.consumeItem(recipeSlot, 1, true);
                     }
                 }
+
+                // fire craft event
+                NetworkCraftEvent event = new NetworkCraftEvent(player, this, inputs, crafted);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()) {
+                    return;
+                }
+                crafted = event.getOutput();
+
                 menu.pushItem(crafted, OUTPUT_SLOT);
                 sendFeedback(menu.getLocation(), FeedbackType.SUCCESS);
             } else {
@@ -182,7 +203,7 @@ public class NetworkQuantumWorkbench extends SpecialSlimefunItem {
     private BlockBreakHandler getBlockBreakHandler() {
         return new BlockBreakHandler(false, false) {
             @Override
-            public void onPlayerBreak(BlockBreakEvent event, ItemStack itemStack, List<ItemStack> drops) {
+            public void onPlayerBreak(@Nonnull BlockBreakEvent event, @Nonnull ItemStack itemStack, @Nonnull List<ItemStack> drops) {
                 BlockMenu menu = StorageCacheUtils.getMenu(event.getBlock().getLocation());
                 menu.dropItems(menu.getLocation(), RECIPE_SLOTS);
                 menu.dropItems(menu.getLocation(), OUTPUT_SLOT);

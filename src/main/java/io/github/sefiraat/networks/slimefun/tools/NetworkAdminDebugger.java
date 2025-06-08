@@ -46,7 +46,7 @@ public class NetworkAdminDebugger extends SpecialSlimefunItem {
                 return;
             }
             if (slimefunItem instanceof AdminDebuggable debuggable) {
-                debuggable.toggle(block.getLocation(), player);
+                debuggable.toggleDebugMode(block.getLocation(), player);
                 e.cancel();
             }
         }

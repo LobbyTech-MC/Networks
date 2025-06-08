@@ -5,15 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
-import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.balugaq.netex.utils.GuideUtil;
 import com.ytdd9527.networksexpansion.utils.itemstacks.ItemStackUtil;
 
@@ -32,6 +23,19 @@ import io.github.thebusybiscuit.slimefun4.core.guide.SlimefunGuideMode;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Final_ROOT
@@ -52,7 +56,7 @@ public class SubFlexItemGroup extends FlexItemGroup {
             new int[]{45, 46, 47, 48, 49, 50, 51, 52, 53}};
 
     private static final JavaPlugin JAVA_PLUGIN = Networks.getInstance();
-    private final ItemStack item;
+    private final @Nullable ItemStack item;
     private final int page;
     /**
      * One SlimefunItem List should only contain 9 SlimefunItems at most.
@@ -60,14 +64,14 @@ public class SubFlexItemGroup extends FlexItemGroup {
     private List<List<SlimefunItem>> slimefunItemList = new ArrayList<>();
     private Map<Integer, SubFlexItemGroup> pageMap = new LinkedHashMap<>();
 
-    public SubFlexItemGroup(NamespacedKey key, ItemStack item, int tier) {
+    public SubFlexItemGroup(@Nonnull NamespacedKey key, @Nullable ItemStack item, int tier) {
         super(key, ItemStackUtil.getCleanItem(item), tier);
         this.item = item;
         this.page = 1;
         this.pageMap.put(1, this);
     }
 
-    public SubFlexItemGroup(NamespacedKey key, ItemStack item, int tier, int page) {
+    public SubFlexItemGroup(@Nonnull NamespacedKey key, @Nullable ItemStack item, int tier, int page) {
         super(key, ItemStackUtil.getCleanItem(item), tier);
         this.item = item;
         this.page = page;
@@ -156,7 +160,7 @@ public class SubFlexItemGroup extends FlexItemGroup {
         }
     }
 
-    public List<SlimefunItem> getSlimefunItems() {
+    public @Nonnull List<SlimefunItem> getSlimefunItems() {
         List<SlimefunItem> result = new ArrayList<>();
         for (List<SlimefunItem> list : this.slimefunItemList) {
             result.addAll(list);
@@ -268,7 +272,7 @@ public class SubFlexItemGroup extends FlexItemGroup {
                 if (this.pageMap.containsKey(page)) {
                     return this.pageMap.get(page);
                 }
-                SubFlexItemGroup subFlexItemGroup = new SubFlexItemGroup(new NamespacedKey(JAVA_PLUGIN, this.getKey().getKey() + "_" + page), this.item, this.getTier(), page);
+                SubFlexItemGroup subFlexItemGroup = new SubFlexItemGroup(Keys.customNewKey(JAVA_PLUGIN, this.getKey().getKey() + "_" + page), this.item, this.getTier(), page);
                 subFlexItemGroup.slimefunItemList = this.slimefunItemList;
                 subFlexItemGroup.pageMap = this.pageMap;
                 this.pageMap.put(page, subFlexItemGroup);

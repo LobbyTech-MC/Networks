@@ -2,6 +2,8 @@ package com.balugaq.netex.api.enums;
 
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
+
 @Getter
 public enum MinecraftVersion {
     MC1_20(20, 0),
@@ -23,7 +25,7 @@ public enum MinecraftVersion {
         this.minor = minor;
     }
 
-    public static MinecraftVersion of(int major, int minor) {
+    public static @Nonnull MinecraftVersion of(int major, int minor) {
         for (MinecraftVersion version : values()) {
             if (version.major == major && version.minor == minor) {
                 return version;
@@ -32,7 +34,7 @@ public enum MinecraftVersion {
         return UNKNOWN;
     }
 
-    public boolean isAtLeast(MinecraftVersion version) {
+    public boolean isAtLeast(@Nonnull MinecraftVersion version) {
         return this.major > version.major || (this.major == version.major && this.minor >= version.minor);
     }
 }

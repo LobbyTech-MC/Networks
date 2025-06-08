@@ -14,7 +14,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 
 /**
  * @author ytdd9527
- * @noinspection SpellCheckingInspection
  * @since 2.0
  */
 public class ExpansionItemStacks {
@@ -805,6 +804,30 @@ public class ExpansionItemStacks {
     public static final SlimefunItemStack STATUS_VIEWER = Theme.themedSlimefunItemStack(
             Networks.getLocalizationService().getItem("NTW_EXPANSION_STATUS_VIEWER", Material.COMPASS),
             Theme.TOOL
+    );
+    public static final SlimefunItemStack DRAWER_TIPS = Theme.themedSlimefunItemStack(
+            Networks.getLocalizationService().getItem("NTW_EXPANSION_DRAWER_TIPS", Material.BOOK),
+            Theme.GUIDE
+    );
+    public static final SlimefunItemStack QUANTUM_MANAGER = Theme.themedSlimefunItemStack(
+            Networks.getLocalizationService().getItem("NTW_EXPANSION_QUANTUM_MANAGER", Material.NETHER_WART_BLOCK),
+            Theme.MACHINE
+    );
+    public static final SlimefunItemStack DRAWER_MANAGER = Theme.themedSlimefunItemStack(
+            Networks.getLocalizationService().getItem("NTW_EXPANSION_DRAWER_MANAGER", Material.WARPED_WART_BLOCK),
+            Theme.MACHINE
+    );
+    public static final SlimefunItemStack ITEM_FLOW_VIEWER = Theme.themedSlimefunItemStack(
+            Networks.getLocalizationService().getItem("NTW_EXPANSION_ITEM_FLOW_VIEWER", Material.GLOWSTONE),
+            Theme.MACHINE
+    );
+    public static final SlimefunItemStack CRAFTER_MANAGER = Theme.themedSlimefunItemStack(
+            Networks.getLocalizationService().getItem("NTW_EXPANSION_CRAFTER_MANAGER", Material.CRAFTING_TABLE),
+            Theme.MACHINE
+    );
+    public static final SlimefunItemStack ADVANCED_VACUUM = Theme.themedSlimefunItemStack(
+            Networks.getLocalizationService().getItem("NTW_EXPANSION_ADVANCED_VACUUM", Material.PINK_GLAZED_TERRACOTTA),
+            Theme.MACHINE
     );
 
     public static ItemStack Enchanted(Material material) {

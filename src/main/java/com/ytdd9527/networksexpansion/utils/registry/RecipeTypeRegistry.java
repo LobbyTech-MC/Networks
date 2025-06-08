@@ -1,5 +1,12 @@
 package com.ytdd9527.networksexpansion.utils.registry;
 
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
+import lombok.Getter;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,7 +28,9 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 public class RecipeTypeRegistry {
     private static volatile RecipeTypeRegistry instance;
     boolean init = false;
+    @Getter
     private Set<RecipeType> recipeTypeSet;
+    @Getter
     private Map<RecipeType, List<SlimefunItem>> recipeSlimefunItemMap;
 
     private RecipeTypeRegistry() {
@@ -79,14 +88,6 @@ public class RecipeTypeRegistry {
         } else {
             this.init();
         }
-    }
-
-    public Set<RecipeType> getRecipeTypeSet() {
-        return this.recipeTypeSet;
-    }
-
-    public Map<RecipeType, List<SlimefunItem>> getRecipeSlimefunItemMap() {
-        return recipeSlimefunItemMap;
     }
 
     @Nullable

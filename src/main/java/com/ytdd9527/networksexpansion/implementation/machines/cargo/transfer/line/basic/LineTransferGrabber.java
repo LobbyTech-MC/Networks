@@ -141,11 +141,9 @@ public class LineTransferGrabber extends NetworkDirectional implements RecipeDis
                 blockMenu.getLocation(),
                 direction,
                 maxDistance,
+                false,
                 true,
-                true,
-                (targetMenu) -> {
-                    LineOperationUtil.grabItem(root, targetMenu, TransportMode.FIRST_STOP, 64);
-                });
+                (targetMenu) -> LineOperationUtil.grabItem(blockMenu.getLocation(), root, targetMenu, TransportMode.FIRST_STOP, 64));
         sendFeedback(blockMenu.getLocation(), FeedbackType.WORKING);
     }
 
@@ -155,7 +153,7 @@ public class LineTransferGrabber extends NetworkDirectional implements RecipeDis
     }
 
     @Override
-    public void onPlace(BlockPlaceEvent e) {
+    public void onPlace(@Nonnull BlockPlaceEvent e) {
         super.onPlace(e);
         if (useSpecialModel) {
             e.getBlock().setType(Material.BARRIER);
@@ -164,7 +162,7 @@ public class LineTransferGrabber extends NetworkDirectional implements RecipeDis
     }
 
     @Override
-    public void postBreak(BlockBreakEvent e) {
+    public void postBreak(@Nonnull BlockBreakEvent e) {
         super.postBreak(e);
         Location location = e.getBlock().getLocation();
         removeDisplay(location);

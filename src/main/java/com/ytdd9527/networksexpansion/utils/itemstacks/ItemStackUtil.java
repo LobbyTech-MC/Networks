@@ -87,8 +87,8 @@ public final class ItemStackUtil {
     }
 
     /**
-     * @param item1
-     * @param item2
+     * @param item1 The first item
+     * @param item2 The second item
      * @return Whether item1 is similar to item2
      */
     public static boolean isItemSimilar(@Nullable ItemStack item1, @Nullable ItemStack item2) {
@@ -658,9 +658,7 @@ public final class ItemStackUtil {
         } else {
             List<String> newLore = new ArrayList<>(lore.size() + 1);
             newLore.add(s);
-            for (String string : lore) {
-                newLore.add(string);
-            }
+            newLore.addAll(lore);
             itemMeta.setLore(newLore);
             item.setItemMeta(itemMeta);
         }
@@ -718,7 +716,7 @@ public final class ItemStackUtil {
         }
         ItemMeta itemMeta = item.getItemMeta();
         List<String> lore = itemMeta.getLore();
-        if (lore == null || lore.size() == 0) {
+        if (lore == null || lore.isEmpty()) {
             return;
         }
         lore = lore.subList(0, Math.max(lore.size() - 1, 0));
@@ -728,7 +726,7 @@ public final class ItemStackUtil {
 
     public static void removeLastLore(@Nonnull ItemMeta itemMeta) {
         List<String> lore = itemMeta.getLore();
-        if (lore == null || lore.size() == 0) {
+        if (lore == null || lore.isEmpty()) {
             return;
         }
         lore = lore.subList(0, Math.max(lore.size() - 1, 0));
@@ -741,7 +739,7 @@ public final class ItemStackUtil {
         }
         ItemMeta itemMeta = item.getItemMeta();
         List<String> lore = itemMeta.getLore();
-        if (lore == null || lore.size() == 0) {
+        if (lore == null || lore.isEmpty()) {
             lore = new ArrayList<>();
             lore.add(s);
         } else {
@@ -753,7 +751,7 @@ public final class ItemStackUtil {
 
     public static void setLastLore(@Nonnull ItemMeta itemMeta, @Nonnull String s) {
         List<String> lore = itemMeta.getLore();
-        if (lore == null || lore.size() == 0) {
+        if (lore == null || lore.isEmpty()) {
             lore = new ArrayList<>();
             lore.add(s);
         } else {
@@ -769,7 +767,7 @@ public final class ItemStackUtil {
         }
         ItemMeta itemMeta = item.getItemMeta();
         List<String> lore = itemMeta.getLore();
-        if (lore == null || lore.size() == 0) {
+        if (lore == null || lore.isEmpty()) {
             return null;
         }
         return lore.get(lore.size() - 1);
@@ -778,7 +776,7 @@ public final class ItemStackUtil {
     @Nullable
     public static String getLastLore(@Nonnull ItemMeta itemMeta) {
         List<String> lore = itemMeta.getLore();
-        if (lore == null || lore.size() == 0) {
+        if (lore == null || lore.isEmpty()) {
             return null;
         }
         return lore.get(lore.size() - 1);

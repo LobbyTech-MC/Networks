@@ -4,19 +4,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import com.balugaq.netex.api.helpers.Icon;
-import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import com.balugaq.netex.api.helpers.SupportedCraftingTableRecipes;
+import com.balugaq.netex.api.interfaces.RecipeCompletableWithGuide;
 import com.balugaq.netex.utils.BlockMenuUtil;
 import com.ytdd9527.networksexpansion.core.items.machines.AbstractGridNewStyle;
 import com.ytdd9527.networksexpansion.implementation.ExpansionItems;
@@ -24,6 +14,7 @@ import com.ytdd9527.networksexpansion.utils.itemstacks.ItemStackUtil;
 
 import io.github.sefiraat.networks.NetworkStorage;
 import io.github.sefiraat.networks.Networks;
+import io.github.sefiraat.networks.events.NetworkCraftEvent;
 import io.github.sefiraat.networks.network.GridItemRequest;
 import io.github.sefiraat.networks.network.NetworkRoot;
 import io.github.sefiraat.networks.network.NodeDefinition;
@@ -37,16 +28,28 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
+import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
-public class NetworkCraftingGridNewStyle extends AbstractGridNewStyle {
+import javax.annotation.Nonnull;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+public class NetworkCraftingGridNewStyle extends AbstractGridNewStyle implements RecipeCompletableWithGuide {
 
     private static final int[] BACKGROUND_SLOTS = {
-            5, 14, 23, 32, 41, 50, 51
+            5, 14, 23, 32, 41, 43, 50, 51
     };
 
     private static final int[] DISPLAY_SLOTS = {
@@ -58,12 +61,14 @@ public class NetworkCraftingGridNewStyle extends AbstractGridNewStyle {
             45, 46, 47, 48, 49
     };
 
+    @Deprecated
     private static final int AUTO_FILTER_SLOT = 43;
     private static final int CHANGE_SORT = 35;
     private static final int FILTER = 42;
     private static final int PAGE_PREVIOUS = 44;
     private static final int PAGE_NEXT = 53;
     private static final int TOGGLE_MODE_SLOT = 52;
+    private static final int JEG_SLOT = 32;
     private static final int CRAFT_BUTTON_SLOT = 33;
     private static final int OUTPUT_SLOT = 34;
     private static final int[] INTEGRATION_SLOTS = {
@@ -82,7 +87,7 @@ public class NetworkCraftingGridNewStyle extends AbstractGridNewStyle {
 
             @Override
             public void init() {
-                drawBackground(getBackgroundSlots());
+                // drawBackground(getBackgroundSlots());
                 drawBackground(getDisplaySlots());
                 setSize(54);
             }
@@ -126,6 +131,8 @@ public class NetworkCraftingGridNewStyle extends AbstractGridNewStyle {
                     if (gridCache.getSortOrder() == GridCache.SortOrder.ALPHABETICAL) {
                         gridCache.setSortOrder(GridCache.SortOrder.NUMBER);
                     } else if (gridCache.getSortOrder() == GridCache.SortOrder.NUMBER) {
+                        gridCache.setSortOrder(GridCache.SortOrder.NUMBER_REVERSE);
+                    } else if (gridCache.getSortOrder() == GridCache.SortOrder.NUMBER_REVERSE) {
                         gridCache.setSortOrder(GridCache.SortOrder.ADDON);
                     } else {
                         gridCache.setSortOrder(GridCache.SortOrder.ALPHABETICAL);
@@ -144,7 +151,7 @@ public class NetworkCraftingGridNewStyle extends AbstractGridNewStyle {
 
                 menu.replaceExistingItem(getToggleModeSlot(), getModeStack(DisplayMode.DISPLAY));
                 menu.addMenuClickHandler(getToggleModeSlot(), (p, slot, item, action) -> {
-                    if (action.isShiftClicked()) {
+                    if (!action.isRightClicked()) {
                         GridCache gridCache = getCacheMap().get(menu.getLocation());
                         gridCache.toggleDisplayMode();
                         menu.replaceExistingItem(getToggleModeSlot(), getModeStack(gridCache));
@@ -163,6 +170,29 @@ public class NetworkCraftingGridNewStyle extends AbstractGridNewStyle {
                     menu.replaceExistingItem(displaySlot, ChestMenuUtils.getBackground());
                     menu.addMenuClickHandler(displaySlot, (p, slot, item, action) -> false);
                 }
+
+                ItemStack exist = menu.getItemInSlot(getAutoFilterSlot());
+                if (exist != null && exist.getType() != Material.AIR && !StackUtils.itemsMatch(exist, ChestMenuUtils.getBackground())) {
+                    // drop item
+                    menu.getLocation().getWorld().dropItemNaturally(menu.getLocation(), exist);
+                }
+
+                for (int backgroundSlot : getBackgroundSlots()) {
+                    menu.replaceExistingItem(backgroundSlot, ChestMenuUtils.getBackground());
+                    menu.addMenuClickHandler(backgroundSlot, (p, slot, item, action) -> false);
+                }
+
+                menu.addPlayerInventoryClickHandler((p, s, i, a) -> {
+                    if (!a.isShiftClicked() || a.isRightClicked()) {
+                        return true;
+                    }
+
+                    // Shift+Left-click
+                    receiveItem(p, i, a, menu);
+                    return false;
+                });
+
+                addJEGButton(menu, JEG_SLOT);
             }
         };
     }
@@ -192,6 +222,7 @@ public class NetworkCraftingGridNewStyle extends AbstractGridNewStyle {
         return PAGE_NEXT;
     }
 
+    @Deprecated
     public int getAutoFilterSlot() {
         return AUTO_FILTER_SLOT;
     }
@@ -218,7 +249,7 @@ public class NetworkCraftingGridNewStyle extends AbstractGridNewStyle {
         if (!action.isRightClicked() && action.isShiftClicked()) {
             ItemStack output = menu.getItemInSlot(OUTPUT_SLOT);
             if (output != null && output.getType() != Material.AIR) {
-                root.addItemStack(output);
+                root.addItemStack0(menu.getLocation(), output);
             }
             return;
         }
@@ -268,7 +299,7 @@ public class NetworkCraftingGridNewStyle extends AbstractGridNewStyle {
 
         ItemStack output = menu.getItemInSlot(OUTPUT_SLOT);
         if (output != null && output.getType() != Material.AIR) {
-            root.addItemStack(output);
+            root.addItemStack0(menu.getLocation(), output);
         }
 
         if (!BlockMenuUtil.fits(menu, crafted, OUTPUT_SLOT)) {
@@ -310,7 +341,7 @@ public class NetworkCraftingGridNewStyle extends AbstractGridNewStyle {
         Map<ItemStack, Integer> need = new HashMap<>();
         for (Map.Entry<ItemStack, Integer> entry : requiredItems.entrySet()) {
             int required = entry.getValue();
-            int amount = (int) (maxAmount * required);
+            int amount = maxAmount * required;
             need.put(entry.getKey(), amount);
         }
 
@@ -318,25 +349,38 @@ public class NetworkCraftingGridNewStyle extends AbstractGridNewStyle {
         for (Map.Entry<ItemStack, Integer> entry : need.entrySet()) {
             ItemStack itemStack = entry.getKey();
             GridItemRequest request = new GridItemRequest(itemStack, entry.getValue(), player);
-            root.getItemStack(request);
+            root.getItemStack0(menu.getLocation(), request);
             if (StackUtils.itemsMatch(itemStack, new ItemStack(itemStack.getType()))) {
                 switch (itemStack.getType()) {
-                    case WATER_BUCKET, LAVA_BUCKET, MILK_BUCKET, COD_BUCKET, SALMON_BUCKET, PUFFERFISH_BUCKET, TROPICAL_FISH_BUCKET, AXOLOTL_BUCKET, POWDER_SNOW_BUCKET, TADPOLE_BUCKET -> {
-                        root.addItemStack(new ItemStack(Material.BUCKET, entry.getValue()));
-                    }
-                    case POTION, SPLASH_POTION, LINGERING_POTION, HONEY_BOTTLE, DRAGON_BREATH -> {
-                        root.addItemStack(new ItemStack(Material.GLASS_BOTTLE, entry.getValue()));
-                    }
-                    case MUSHROOM_STEW, BEETROOT_SOUP, RABBIT_STEW, SUSPICIOUS_STEW -> {
-                        root.addItemStack(new ItemStack(Material.BOWL, entry.getValue()));
-                    }
+                    case WATER_BUCKET, LAVA_BUCKET, MILK_BUCKET, COD_BUCKET, SALMON_BUCKET, PUFFERFISH_BUCKET,
+                         TROPICAL_FISH_BUCKET, AXOLOTL_BUCKET, POWDER_SNOW_BUCKET, TADPOLE_BUCKET ->
+                            root.addItemStack0(menu.getLocation(), new ItemStack(Material.BUCKET, entry.getValue()));
+                    case POTION, SPLASH_POTION, LINGERING_POTION, HONEY_BOTTLE, DRAGON_BREATH ->
+                            root.addItemStack0(menu.getLocation(), new ItemStack(Material.GLASS_BOTTLE, entry.getValue()));
+                    case MUSHROOM_STEW, BEETROOT_SOUP, RABBIT_STEW, SUSPICIOUS_STEW ->
+                            root.addItemStack0(menu.getLocation(), new ItemStack(Material.BOWL, entry.getValue()));
                 }
             }
         }
 
         // push items
         int outputAmount = crafted.getAmount() * maxAmount;
-        BlockMenuUtil.pushItem(menu, StackUtils.getAsQuantity(crafted, outputAmount), OUTPUT_SLOT);
+        crafted = StackUtils.getAsQuantity(crafted, outputAmount);
+
+        // fire craft event
+        NetworkCraftEvent event = new NetworkCraftEvent(player, this, inputs, crafted);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        crafted = event.getOutput();
+
+        BlockMenuUtil.pushItem(menu, crafted, OUTPUT_SLOT);
         menu.replaceExistingItem(CRAFT_BUTTON_SLOT, ItemStackUtil.getCleanItem(new CustomItemStack(Icon.CRAFT_BUTTON_NEW_STYLE, String.format(Networks.getLocalizationService().getString("messages.normal-operation.grid_new_style.crafted"), ItemStackHelper.getDisplayName(crafted), outputAmount))));
+    }
+
+    @Override
+    public int[] getIngredientSlots() {
+        return INTEGRATION_SLOTS;
     }
 }

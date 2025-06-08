@@ -37,7 +37,6 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 
-@SuppressWarnings("deprecation")
 public class NetworkPurger extends NetworkObject {
 
     private static final int[] BACKGROUND_SLOTS = {0, 1, 2, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26};
@@ -78,7 +77,7 @@ public class NetworkPurger extends NetworkObject {
                 },
                 new BlockBreakHandler(true, true) {
                     @Override
-                    public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
+                    public void onPlayerBreak(@Nonnull BlockBreakEvent e, @Nonnull ItemStack item, @Nonnull List<ItemStack> drops) {
                         BlockMenu blockMenu = StorageCacheUtils.getMenu(e.getBlock().getLocation());
                         blockMenu.dropItems(blockMenu.getLocation(), TEST_ITEM_SLOT);
                     }
@@ -103,7 +102,7 @@ public class NetworkPurger extends NetworkObject {
         ItemStack clone = StackUtils.getAsQuantity(testItem, 1);
 
         ItemRequest itemRequest = new ItemRequest(clone, clone.getMaxStackSize());
-        ItemStack retrieved = definition.getNode().getRoot().getItemStack(itemRequest);
+        ItemStack retrieved = definition.getNode().getRoot().getItemStack0(blockMenu.getLocation(), itemRequest);
         if (retrieved != null) {
             retrieved.setAmount(0);
             sendFeedback(blockMenu.getLocation(), FeedbackType.WORKING);

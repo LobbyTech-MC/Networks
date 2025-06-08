@@ -41,10 +41,24 @@ import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
+import lombok.Setter;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class AdvancedPurger extends NetworkObject implements RecipeDisplayItem {
 
@@ -59,6 +73,7 @@ public class AdvancedPurger extends NetworkObject implements RecipeDisplayItem {
     };
     private static final int[] TEST_ITEM_BACKDROP = {8, 17, 26, 35, 44, 53};
     private final ItemSetting<Integer> tickRate;
+    @Setter
     private boolean useSpecialModel = false;
 
     public AdvancedPurger(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
@@ -98,7 +113,7 @@ public class AdvancedPurger extends NetworkObject implements RecipeDisplayItem {
                 },
                 new BlockBreakHandler(true, true) {
                     @Override
-                    public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
+                    public void onPlayerBreak(@Nonnull BlockBreakEvent e, @Nonnull ItemStack item, @Nonnull List<ItemStack> drops) {
                         BlockMenu blockMenu = StorageCacheUtils.getMenu(e.getBlock().getLocation());
                         blockMenu.dropItems(blockMenu.getLocation(), TEST_ITEM_SLOT);
                     }
@@ -127,7 +142,7 @@ public class AdvancedPurger extends NetworkObject implements RecipeDisplayItem {
             clone.setAmount(1);
 
             ItemRequest itemRequest = new ItemRequest(clone, clone.getMaxStackSize());
-            ItemStack retrieved = definition.getNode().getRoot().getItemStack(itemRequest);
+            ItemStack retrieved = definition.getNode().getRoot().getItemStack0(blockMenu.getLocation(), itemRequest);
             if (retrieved != null) {
                 retrieved.setAmount(0);
                 Location location = blockMenu.getLocation().clone().add(0.5, 1.2, 0.5);
@@ -175,16 +190,12 @@ public class AdvancedPurger extends NetworkObject implements RecipeDisplayItem {
 
         addItemHandler(new BlockBreakHandler(false, false) {
             @Override
-            public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
+            public void onPlayerBreak(@Nonnull BlockBreakEvent e, @Nonnull ItemStack item, @Nonnull List<ItemStack> drops) {
                 Location location = e.getBlock().getLocation();
                 removeDisplay(location);
                 e.getBlock().setType(Material.AIR);
             }
         });
-    }
-
-    public void setUseSpecialModel(boolean useSpecialModel) {
-        this.useSpecialModel = useSpecialModel;
     }
 
     private void setupDisplay(@Nonnull Location location) {

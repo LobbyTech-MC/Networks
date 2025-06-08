@@ -1,7 +1,8 @@
 package io.github.sefiraat.networks.slimefun.network.grid;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -10,7 +11,13 @@ import org.bukkit.inventory.ItemStack;
 
 public class GridCache {
 
+    @Nonnull
+    private final List<ItemStack> pullItemHistory = new ArrayList<>();
+    @Setter
+    @Getter
     private int page;
+    @Setter
+    @Getter
     private int maxPages;
     @Nonnull
     private DisplayMode displayMode;
@@ -18,30 +25,12 @@ public class GridCache {
     private SortOrder sortOrder;
     @Nullable
     private String filter;
-    @Nonnull
-    private List<ItemStack> pullItemHistory = new ArrayList<>();
 
     public GridCache(int page, int maxPages, @Nonnull SortOrder sortOrder) {
         this.page = page;
         this.maxPages = maxPages;
         this.sortOrder = sortOrder;
         this.displayMode = DisplayMode.DISPLAY;
-    }
-
-    public int getPage() {
-        return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public int getMaxPages() {
-        return this.maxPages;
-    }
-
-    public void setMaxPages(int maxPages) {
-        this.maxPages = maxPages;
     }
 
     @Nonnull
@@ -62,22 +51,20 @@ public class GridCache {
         this.filter = filter;
     }
 
-    @Nullable
+    @Nonnull
     public List<ItemStack> getPullItemHistory() {
         return this.pullItemHistory;
     }
 
     public void addPullItemHistory(@Nullable ItemStack itemStack) {
         if (itemStack != null) {
-            if (getPullItemHistory().contains(itemStack)) {
-                getPullItemHistory().remove(itemStack);
-            }
+            getPullItemHistory().remove(itemStack);
 
             getPullItemHistory().add(0, itemStack);
         }
     }
 
-    public DisplayMode getDisplayMode() {
+    public @Nonnull DisplayMode getDisplayMode() {
         return this.displayMode;
     }
 
@@ -92,7 +79,28 @@ public class GridCache {
     public enum SortOrder {
         ALPHABETICAL,
         NUMBER,
-        ADDON
+        NUMBER_REVERSE,
+        ADDON;
+
+        public SortOrder next() {
+            return switch (this) {
+                case ALPHABETICAL -> NUMBER;
+                case NUMBER -> NUMBER_REVERSE;
+                case NUMBER_REVERSE -> ADDON;
+                case ADDON -> ALPHABETICAL;
+                default -> ALPHABETICAL;
+            };
+        }
+
+        public SortOrder previous() {
+            return switch (this) {
+                case ALPHABETICAL -> ADDON;
+                case NUMBER -> ALPHABETICAL;
+                case NUMBER_REVERSE -> NUMBER;
+                case ADDON -> NUMBER_REVERSE;
+                default -> ALPHABETICAL;
+            };
+        }
     }
 
     public enum DisplayMode {

@@ -159,11 +159,9 @@ public class AdvancedLineTransferGrabber extends AdvancedDirectional implements 
                 blockMenu.getLocation(),
                 direction,
                 maxDistance,
+                false,
                 true,
-                true,
-                (targetMenu) -> {
-                    LineOperationUtil.grabItem(root, targetMenu, mode, limitQuantity);
-                });
+                (targetMenu) -> LineOperationUtil.grabItem(blockMenu.getLocation(), root, targetMenu, mode, limitQuantity));
         sendFeedback(blockMenu.getLocation(), FeedbackType.WORKING);
     }
 

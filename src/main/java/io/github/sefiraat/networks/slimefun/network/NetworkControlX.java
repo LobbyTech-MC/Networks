@@ -39,7 +39,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.paperlib.features.blockstate
 import io.github.thebusybiscuit.slimefun4.utils.tags.SlimefunTag;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 
-@SuppressWarnings("deprecation")
 public class NetworkControlX extends NetworkDirectional {
 
     private static final int[] BACKGROUND_SLOTS = new int[]{
@@ -142,7 +141,7 @@ public class NetworkControlX extends NetworkDirectional {
 
             final ItemStack resultStack = new ItemStack(material, 1);
 
-            definition.getNode().getRoot().addItemStack(resultStack);
+            definition.getNode().getRoot().addItemStack0(blockMenu.getLocation(), resultStack);
 
             if (resultStack.getAmount() == 0) {
                 this.blockCache.add(targetPosition);

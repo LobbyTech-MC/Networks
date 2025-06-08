@@ -17,6 +17,7 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ToolUseHandler;
 
+@Deprecated
 public class NetworksExpansionWorldEditAxe extends SpecialSlimefunItem {
 
     public NetworksExpansionWorldEditAxe(ItemGroup itemGroup, SlimefunItemStack item) {

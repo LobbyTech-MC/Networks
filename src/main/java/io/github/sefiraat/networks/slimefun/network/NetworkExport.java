@@ -34,7 +34,6 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 
-@SuppressWarnings("deprecation")
 public class NetworkExport extends NetworkObject {
 
     private static final int[] BACKGROUND_SLOTS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 13, 17, 18, 22, 26, 27, 31, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44};
@@ -79,7 +78,7 @@ public class NetworkExport extends NetworkObject {
                 },
                 new BlockBreakHandler(true, true) {
                     @Override
-                    public void onPlayerBreak(BlockBreakEvent e, ItemStack item, List<ItemStack> drops) {
+                    public void onPlayerBreak(@Nonnull BlockBreakEvent e, @Nonnull ItemStack item, @Nonnull List<ItemStack> drops) {
                         BlockMenu blockMenu = StorageCacheUtils.getMenu(e.getBlock().getLocation());
                         blockMenu.dropItems(blockMenu.getLocation(), TEST_ITEM_SLOT);
                         blockMenu.dropItems(blockMenu.getLocation(), OUTPUT_ITEM_SLOT);
@@ -107,7 +106,7 @@ public class NetworkExport extends NetworkObject {
         ItemStack clone = testItem.clone();
 
         ItemRequest itemRequest = new ItemRequest(clone, clone.getMaxStackSize());
-        ItemStack retrieved = definition.getNode().getRoot().getItemStack(itemRequest);
+        ItemStack retrieved = definition.getNode().getRoot().getItemStack0(blockMenu.getLocation(), itemRequest);
         if (retrieved != null) {
             blockMenu.pushItem(retrieved, OUTPUT_ITEM_SLOT);
         }

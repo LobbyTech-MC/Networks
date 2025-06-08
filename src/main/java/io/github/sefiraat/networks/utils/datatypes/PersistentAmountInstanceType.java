@@ -19,7 +19,7 @@ import io.github.sefiraat.networks.utils.Keys;
  * @author Sfiguz7
  * @author Walshy
  */
-
+@Deprecated
 public class PersistentAmountInstanceType implements PersistentDataType<PersistentDataContainer, CardInstance> {
 
     public static final PersistentDataType<PersistentDataContainer, CardInstance> TYPE = new PersistentAmountInstanceType();
